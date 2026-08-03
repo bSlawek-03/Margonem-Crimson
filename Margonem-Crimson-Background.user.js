@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson — Tło
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.2.0
+// @version      1.3.0
 // @description  Czarne tło Crimson z arcydemonem po prawej stronie.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -34,7 +34,7 @@
       inset: 0 !important;
       z-index: -9999 !important;
       pointer-events: none !important;
-      background: #030102 url("${background}") center / 100vw 100vh no-repeat !important;
+      background: #030102 url("${background}") calc(50% + 24px) center / calc(100vw + 48px) 100vh no-repeat !important;
     }
 
     #revo-background {
