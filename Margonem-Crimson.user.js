@@ -44,13 +44,10 @@
     }
     /* UI texture layer — intentional exclusions: .map, .item, .icon and canvas. */
     .top > .bg,
-    .bg-additional-widget-left,.bg-additional-widget-right,
-    .bottom-left-additional,.bottom-right-additional,
-    .bottom-panel-graphic,
     .interface-element-bottom-bar-background-stretch,.c-window__bottom-bar,
     .window-wood-background,.interface-element-vertical-wood,
     .interface-element-header-1-background-stretch,.header-background-graphic,
-    .bottom-panel-graphics,.middle-graphics,.background-graphic,.graphic-background {
+    .middle-graphics,.background-graphic,.graphic-background {
       background-image:
         linear-gradient(90deg,rgba(91,14,22,.85),transparent 9%,transparent 91%,rgba(91,14,22,.85)),
         repeating-linear-gradient(0deg,#16090b 0 4px,#100708 4px 8px)!important;
