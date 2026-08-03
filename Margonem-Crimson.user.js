@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.8.2
+// @version      5.9.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -73,9 +73,10 @@
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
   function updateHpOverlay() {
-    const source = document.querySelector("[data-mc='hp-globe']");
-    if (!source || !document.body) return;
-    const match = source.textContent.match(/(\d{1,3})\s*%/);
+    const wrapper = document.querySelector("[data-mc='hp-globe']");
+    const source = document.querySelector('.hp-indicator') || wrapper;
+    if (!wrapper || !source || !document.body) return;
+    const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
     if (!match) return;
     const health = Math.max(0, Math.min(100, Number(match[1])));
     source.style.setProperty('visibility', 'hidden', 'important');
@@ -88,10 +89,10 @@
       document.body.appendChild(overlay);
     }
     const rect = source.getBoundingClientRect();
-    // The native wrapper is a wide rectangle; the orb itself must stay square.
-    const size = Math.max(96, Math.min(106, rect.height * 1.2));
+    // Use the real circular HP element, not its wide parent wrapper.
+    const size = Math.max(96, Math.min(116, Math.max(rect.width, rect.height)));
     overlay.style.left = `${rect.left + (rect.width - size) / 2}px`;
-    overlay.style.top = `${rect.top + (rect.height - size) / 2 - 7}px`;
+    overlay.style.top = `${rect.top + (rect.height - size) / 2}px`;
     overlay.style.width = `${size}px`;
     overlay.style.height = `${size}px`;
     overlay.style.setProperty('--mc-hp-empty-height', `${100 - health}%`);
