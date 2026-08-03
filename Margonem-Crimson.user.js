@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.3.0
+// @version      5.4.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,7 +12,8 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     crimsonHp https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-orb-v2.png
+// @resource     crimsonHpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-frame.png
+// @resource     crimsonHpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-core.png
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -23,7 +24,8 @@
   const crimsonTop = GM_getResourceURL('crimsonTop');
   const crimsonBottom = GM_getResourceURL('crimsonBottom');
   const crimsonPanel = GM_getResourceURL('crimsonPanel');
-  const crimsonHp = GM_getResourceURL('crimsonHp');
+  const crimsonHpFrame = GM_getResourceURL('crimsonHpFrame');
+  const crimsonHpCore = GM_getResourceURL('crimsonHpCore');
   const crimsonButton = GM_getResourceURL('crimsonButton');
 
   // Margonem does not expose stable IDs for these elements.  Mark the exact
@@ -60,6 +62,14 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
+      if (element.querySelector('.mc-hp-frame')) return;
+      const frame = document.createElement('div');
+      frame.className = 'mc-hp-frame';
+      const core = document.createElement('div');
+      core.className = 'mc-hp-core';
+      element.append(frame, core);
+    });
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -218,6 +228,16 @@
       box-shadow: 0 0 0 1px #7f2430 inset !important;
     }
     .inventory-grid, .inner-grid { background: transparent !important; }
+    .inventory_wrapper .scroll-pane,
+    .inventory_wrapper .scroll-pane-content,
+    .inventory_wrapper .scroll-wrapper {
+      background-color: #0a0809 !important;
+      background-image:
+        linear-gradient(rgba(139, 34, 45, .75) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 34, 45, .75) 1px, transparent 1px) !important;
+      background-size: 32px 32px !important;
+      background-position: 0 0 !important;
+    }
     .interface-element-one-black-tile, .bags-navigation-bg {
       background: linear-gradient(145deg, #21080b, #090708) !important;
       border-color: #74202a !important;
@@ -269,7 +289,7 @@
     }
     #mc-top-frame {
       position: absolute !important;
-      top: 66px !important;
+      top: 78px !important;
       left: 0 !important;
       width: 100vw !important;
       height: 20px !important;
@@ -296,22 +316,38 @@
       box-shadow: none !important;
     }
     [data-mc='hp-globe'] {
-      background: url("${crimsonHp}") center / 100% 100% no-repeat !important;
+      background: none !important;
       filter: drop-shadow(0 0 6px rgba(197, 21, 31, .52)) !important;
       --mc-hp-missing: 0%;
       overflow: visible !important;
     }
-    [data-mc='hp-globe']::before {
+    .mc-hp-frame, .mc-hp-core {
+      position: absolute;
+      pointer-events: none;
+    }
+    .mc-hp-frame {
+      z-index: 2;
+      inset: 0;
+      background: url("${crimsonHpFrame}") center / contain no-repeat;
+    }
+    .mc-hp-core {
+      z-index: 3;
+      top: 19%;
+      left: 24%;
+      width: 52%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      background: url("${crimsonHpCore}") center / cover no-repeat;
+    }
+    .mc-hp-core::after {
       content: '';
       position: absolute;
-      z-index: 2;
-      top: 10%;
-      left: 29%;
-      width: 42%;
+      left: 0;
+      right: 0;
+      top: 0;
       height: var(--mc-hp-missing);
-      max-height: 72%;
       background: linear-gradient(180deg, rgba(5, 3, 4, .95), rgba(34, 5, 8, .78));
-      border-radius: 48% 48% 30% 30%;
       box-shadow: inset 0 -2px 5px rgba(163, 17, 29, .4);
       pointer-events: none;
     }
@@ -320,7 +356,7 @@
     [data-mc='hp-globe'] .glass { opacity: 0 !important; }
     [data-mc='hp-globe'] .hpp {
       position: relative !important;
-      z-index: 3 !important;
+      z-index: 5 !important;
       color: #ffe7e7 !important;
       font-family: Georgia, serif !important;
       font-weight: bold !important;
