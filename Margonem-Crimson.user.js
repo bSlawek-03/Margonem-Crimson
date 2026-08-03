@@ -1,19 +1,24 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.0.0
+// @version      3.1.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
 // @match        https://margonem.pl/*
 // @run-at       document-start
 // @grant        GM_addStyle
+// @grant        GM_getResourceURL
+// @resource     hebrehoth https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hebrehoth-smokoludzie.gif
+// @resource     archdemon https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/archdemon.gif
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // ==/UserScript==
 
 (() => {
   'use strict';
+  const hebrehoth = GM_getResourceURL('hebrehoth');
+  const archdemon = GM_getResourceURL('archdemon');
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -139,5 +144,62 @@
     .mini-map-buttons .button:hover, .window-controlls > *:hover {
       filter: sepia(1) saturate(3) hue-rotate(304deg) brightness(1.15) contrast(1.17) drop-shadow(0 0 4px #e62c38) !important;
     }
+
+    /* Fixed game frame. Only the native background layers are painted: no height,
+       width or position is changed, so the map and HUD keep their own layout. */
+    .top > .bg {
+      background-color: #100708 !important;
+      background-image:
+        url("${hebrehoth}"),
+        url("${archdemon}"),
+        repeating-linear-gradient(0deg, rgba(255, 69, 74, .035) 0 1px, transparent 1px 4px),
+        linear-gradient(180deg, #1c0709 0%, #080607 82%) !important;
+      background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
+      background-position: 3.5% 1px, 96.5% 6px, 0 0, 0 0 !important;
+      background-size: 92px auto, 92px auto, auto, auto !important;
+      border-bottom: 1px solid #8a1e28 !important;
+      box-shadow: inset 0 -2px 0 #210508, 0 2px 8px rgba(175, 17, 28, .28) !important;
+    }
+    .top-left, .top-right {
+      background: linear-gradient(180deg, rgba(40, 8, 11, .80), rgba(7, 6, 7, .25)) !important;
+      border: 1px solid rgba(137, 30, 39, .65) !important;
+      border-top: 0 !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .55) !important;
+    }
+
+    /* Bottom: paint backgrounds only. The battle controller, slots and their size
+       are intentionally left to the game. */
+    .bottom > .bg {
+      background: repeating-linear-gradient(0deg, rgba(255, 69, 74, .032) 0 1px, transparent 1px 4px),
+        linear-gradient(180deg, #080607, #1a0709 55%, #080607) !important;
+      border-top: 1px solid #8a1e28 !important;
+      box-shadow: inset 0 2px 0 #250609, 0 -2px 8px rgba(175, 17, 28, .26) !important;
+    }
+    .bottom > .bg-additional-widget-left, .bottom > .bg-additional-widget-right {
+      background: linear-gradient(180deg, rgba(22, 7, 9, .92), rgba(6, 5, 6, .86)) !important;
+      border-top: 1px solid #6e1b25 !important;
+    }
+
+    /* The native HP globe stays functional; this only adds the red-metal rim and
+       two small ornamental claws behind it. */
+    .hp-indicator-wrapper {
+      filter: drop-shadow(0 0 7px rgba(197, 21, 31, .58)) !important;
+    }
+    .hp-indicator-wrapper::before, .hp-indicator-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 46%;
+      width: 23px;
+      height: 28px;
+      border: 2px solid #9e2630;
+      border-top-color: #ee5960;
+      border-bottom: 0;
+      opacity: .9;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hp-indicator-wrapper::before { right: 87%; transform: rotate(-29deg) skewY(-18deg); border-radius: 90% 0 0 0; }
+    .hp-indicator-wrapper::after { left: 87%; transform: rotate(29deg) skewY(18deg); border-radius: 0 90% 0 0; }
+    .hp-indicator .blood-frame { filter: sepia(.35) saturate(1.55) hue-rotate(327deg) contrast(1.12) !important; }
   `);
 })();
