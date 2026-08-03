@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.5.0
+// @version      5.5.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -62,14 +62,7 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
-      if (element.querySelector('.mc-hp-frame')) return;
-      const frame = document.createElement('div');
-      frame.className = 'mc-hp-frame';
-      const core = document.createElement('div');
-      core.className = 'mc-hp-core';
-      element.append(frame, core);
-    });
+    document.querySelectorAll("[data-mc='hp-globe'] .mc-hp-frame, [data-mc='hp-globe'] .mc-hp-core").forEach((element) => element.remove());
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -305,7 +298,7 @@
       filter: drop-shadow(0 0 5px rgba(190, 20, 30, .42)) !important;
       overflow: visible !important;
     }
-    .mc-hp-frame, .mc-hp-core { display: none !important; }
+    .mc-hp-frame, .mc-hp-core { display: none !important; visibility: hidden !important; opacity: 0 !important; }
     [data-mc='hp-globe'] .blood-frame,
     [data-mc='hp-globe'] .blood,
     [data-mc='hp-globe'] .glass { opacity: 1 !important; }
