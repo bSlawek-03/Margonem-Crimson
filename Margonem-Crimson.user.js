@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.9.0
+// @version      5.9.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -79,7 +79,8 @@
     const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
     if (!match) return;
     const health = Math.max(0, Math.min(100, Number(match[1])));
-    source.style.setProperty('visibility', 'hidden', 'important');
+    // Hide the complete default HP decoration, including its silver side frame.
+    wrapper.style.setProperty('visibility', 'hidden', 'important');
     let overlay = document.querySelector('#mc-hp-overlay');
     if (!overlay) {
       overlay = document.createElement('div');
