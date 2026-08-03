@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.4.3
+// @version      5.4.4
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -122,13 +122,14 @@
     /* Central character HUD: a frame only, no padding or size changes. */
     [data-mc='hero-hud'] {
       background-color: #120a0b !important;
-      background-image: url("${crimsonPanel}") !important;
+      background-image: url("${crimsonTop}") !important;
       background-size: 100% 100% !important;
       background-position: center !important;
       background-repeat: no-repeat !important;
       border: 0 !important;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .62) !important;
     }
+    [data-mc='hero-hud'] > * { position: relative !important; z-index: 2 !important; }
     .header-label-positioner, .gargonem-window-header, .mz-window__header, .vaddonz-window__header {
       background: linear-gradient(180deg, #460d14, #170508 70%, #090606) !important;
       border-bottom: 1px solid #8d2630 !important;
@@ -296,6 +297,7 @@
       pointer-events: none !important;
       z-index: 2 !important;
       background: url("${crimsonTop}") center / 100% 100% no-repeat !important;
+      display: none !important;
     }
     [data-mc='top-left'], [data-mc='top-right'] {
       background: linear-gradient(180deg, rgba(40, 8, 11, .80), rgba(7, 6, 7, .25)) !important;
