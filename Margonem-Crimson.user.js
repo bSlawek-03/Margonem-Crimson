@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.3.1
+// @version      6.4.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,8 +12,8 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-full-exact.png?v=1
-// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-exact.png?v=2
+// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-exact.png?v=3
+// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-exact.png?v=3
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -67,29 +67,18 @@
       const health = match ? Math.max(0, Math.min(100, Number(match[1]))) : 100;
       const glass = wrapper.querySelector('.glass');
       if (!glass) return;
-      let loss = glass.querySelector('.mc-hp-loss');
-      if (!loss) {
-        loss = document.createElement('div');
-        loss.className = 'mc-hp-loss';
-        glass.appendChild(loss);
+      let visual = wrapper.querySelector('.mc-hp-exact');
+      if (!visual) {
+        visual = document.createElement('div');
+        visual.className = 'mc-hp-exact';
+        visual.setAttribute('aria-hidden', 'true');
+        visual.innerHTML = '<div class="mc-hp-exact-core"></div><div class="mc-hp-exact-frame"></div><div class="mc-hp-exact-value"></div>';
+        wrapper.appendChild(visual);
       }
-      loss.style.height = `${(100 - health) * 0.66}%`;
-      glass.style.setProperty('background', `transparent url("${hpFrame}") center / 100% 100% no-repeat`, 'important');
-      glass.style.setProperty('opacity', '1', 'important');
-      glass.style.setProperty('filter', 'none', 'important');
-      glass.style.setProperty('mask', 'none', 'important');
-      glass.style.setProperty('-webkit-mask', 'none', 'important');
-      glass.style.setProperty('mix-blend-mode', 'normal', 'important');
-      glass.style.setProperty('background-blend-mode', 'normal', 'important');
-      glass.style.setProperty('width', '102px', 'important');
-      glass.style.setProperty('height', '92px', 'important');
-      glass.style.setProperty('transform', 'none', 'important');
-      glass.style.setProperty('z-index', '3', 'important');
-    });
-    document.querySelectorAll("[data-mc='hp-globe'] .hp-indicator").forEach((indicator) => {
-      indicator.style.setProperty('background', 'transparent', 'important');
-      indicator.style.setProperty('filter', 'none', 'important');
-      indicator.style.setProperty('mix-blend-mode', 'normal', 'important');
+      visual.style.left = `${glass.offsetLeft}px`;
+      visual.style.top = `${glass.offsetTop}px`;
+      visual.querySelector('.mc-hp-exact-core').style.clipPath = `inset(${100 - health}% 0 0 0)`;
+      visual.querySelector('.mc-hp-exact-value').textContent = `${health}%`;
     });
     document.querySelector('#mc-hp-overlay')?.remove();
   };
@@ -103,8 +92,13 @@
   setInterval(() => {
     document.querySelectorAll("[data-mc='hp-globe']").forEach((wrapper) => {
       const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
-      const loss = wrapper.querySelector('.mc-hp-loss');
-      if (match && loss) loss.style.height = `${(100 - Number(match[1])) * 0.66}%`;
+      const core = wrapper.querySelector('.mc-hp-exact-core');
+      const value = wrapper.querySelector('.mc-hp-exact-value');
+      if (match && core) {
+        const health = Math.max(0, Math.min(100, Number(match[1])));
+        core.style.clipPath = `inset(${100 - health}% 0 0 0)`;
+        if (value) value.textContent = `${health}%`;
+      }
     });
   }, 250);
   /*
@@ -327,56 +321,61 @@
     }
     [data-mc='bottom-bg'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
     /* HP globe: two independent transparent graphics — frame and HP core. */
+    [data-mc='hp-globe'] .blood-frame,
+    [data-mc='hp-globe'] .blood,
+    [data-mc='hp-globe'] .glass,
     [data-mc='hp-globe'] .hpp {
-      position: relative !important;
-      z-index: 5 !important;
-      color: #ffe7e7 !important;
-      font-family: Georgia, serif !important;
-      font-weight: bold !important;
-      text-shadow: 0 1px 2px #000, 0 0 5px #8f1019 !important;
+      visibility: hidden !important;
     }
-    [data-mc='hp-globe'] .blood-frame {
-      opacity: 0 !important;
-    }
-    [data-mc='hp-globe'] .hp-indicator {
-      z-index: 4 !important;
-      background: transparent !important;
-      filter: none !important;
-      mix-blend-mode: normal !important;
-    }
-    [data-mc='hp-globe'] .blood {
-      position: relative !important;
-      z-index: 2 !important;
-      background-image: url("${hpCore}") !important;
-      background-repeat: no-repeat !important;
-      background-position: center bottom !important;
-      background-size: 100% auto !important;
-      box-shadow: none !important;
-      opacity: 0 !important;
-    }
-    [data-mc='hp-globe'] .glass {
-      position: relative !important;
-      z-index: 3 !important;
-      opacity: 1 !important;
-      pointer-events: none !important;
-      mix-blend-mode: normal !important;
-      background-blend-mode: normal !important;
+    [data-mc='hp-globe'] .mc-hp-exact {
+      position: absolute !important;
       width: 102px !important;
       height: 92px !important;
+      min-width: 102px !important;
+      min-height: 92px !important;
+      max-width: 102px !important;
+      max-height: 92px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      z-index: 100 !important;
       transform: none !important;
-      background: transparent url("${hpFrame}") center / 100% 100% no-repeat !important;
     }
-    [data-mc='hp-globe'] .mc-hp-loss {
-      position: absolute;
-      z-index: 1;
-      top: 17%;
-      left: 21.5%;
-      width: 57%;
-      max-height: 66%;
-      background: #080506;
-      border-radius: 48% 48% 22% 22%;
-      box-shadow: inset 0 -2px 4px rgba(145, 8, 16, .4);
-      pointer-events: none;
+    [data-mc='hp-globe'] .mc-hp-exact-core,
+    [data-mc='hp-globe'] .mc-hp-exact-frame {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 102px !important;
+      height: 92px !important;
+      background-repeat: no-repeat !important;
+      background-position: 0 0 !important;
+      background-size: 102px 92px !important;
+      transform: none !important;
+    }
+    [data-mc='hp-globe'] .mc-hp-exact-core {
+      z-index: 1 !important;
+      background-image: url("${hpCore}") !important;
+      clip-path: inset(0 0 0 0);
+      -webkit-clip-path: inset(0 0 0 0);
+      transition: clip-path .15s linear, -webkit-clip-path .15s linear;
+    }
+    [data-mc='hp-globe'] .mc-hp-exact-frame {
+      z-index: 2 !important;
+      background-image: url("${hpFrame}") !important;
+    }
+    [data-mc='hp-globe'] .mc-hp-exact-value {
+      position: absolute !important;
+      z-index: 3 !important;
+      top: 40px !important;
+      left: 0 !important;
+      width: 102px !important;
+      color: #fff3f3 !important;
+      font: 700 16px/20px Georgia, 'Times New Roman', serif !important;
+      letter-spacing: -.5px !important;
+      text-align: center !important;
+      text-shadow: 0 2px 2px #000, 0 0 5px #81030a !important;
     }
   `);
 })();
