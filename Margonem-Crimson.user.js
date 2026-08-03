@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.2.0
+// @version      5.3.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,7 +12,7 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     crimsonHp https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-orb.png
+// @resource     crimsonHp https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-orb-v2.png
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -37,6 +37,7 @@
     ['.bottom > .bg-additional-widget-left', 'bottom-side'],
     ['.bottom > .bg-additional-widget-right', 'bottom-side'],
     ['.hp-indicator-wrapper', 'hp-globe'],
+    ['.hud-container', 'hero-hud'],
     ['.right-main-column-wrapper', 'equipment-column'],
     ['.inventory-grid-bg', 'inventory-bg'],
     ['.interface-element-item-slot-grid-stretch', 'inventory-grid-frame']
@@ -107,6 +108,16 @@
       box-shadow: 0 0 0 1px #210508 inset, 0 10px 26px rgba(0, 0, 0, .72), 0 0 12px rgba(153, 12, 23, .18) !important;
       color: var(--mc-text) !important;
       font-family: var(--mc-font) !important;
+    }
+    /* Central character HUD: a frame only, no padding or size changes. */
+    [data-mc='hero-hud'] {
+      background-color: #120a0b !important;
+      background-image: url("${crimsonPanel}") !important;
+      background-size: 100% 100% !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      border: 0 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .62) !important;
     }
     .header-label-positioner, .gargonem-window-header, .mz-window__header, .vaddonz-window__header {
       background: linear-gradient(180deg, #460d14, #170508 70%, #090606) !important;
