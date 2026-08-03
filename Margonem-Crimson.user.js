@@ -57,6 +57,15 @@
       border-color:#6b1b25!important;
       box-shadow:0 0 0 1px #230608 inset,0 0 12px rgba(122,9,19,.25)!important;
     }
+    /* Keep original button pictograms; recolour only their green interface skin. */
+    .widget-button,.ie-icon,.manage-hamburger-button,.attach-icon-show-handheld,
+    .mini-map-buttons .button,.window-controlls > *,.transparent-window-buttons-menu > * {
+      filter:sepia(1) saturate(2.35) hue-rotate(304deg) brightness(.93) contrast(1.18)!important;
+    }
+    .widget-button:hover,.ie-icon:hover,.manage-hamburger-button:hover,.attach-icon-show-handheld:hover,
+    .mini-map-buttons .button:hover,.window-controlls > *:hover {
+      filter:sepia(1) saturate(3.2) hue-rotate(304deg) brightness(1.18) contrast(1.18) drop-shadow(0 0 4px #e62c38)!important;
+    }
     .c-window,.mz-window,.gargonem-window,.vaddonz-window,.popup-menu,.chat-modal,.mAlert {
       background:linear-gradient(145deg,rgba(24,12,14,.97),rgba(7,7,7,.97))!important;
       border-color:var(--crimson-line)!important;
