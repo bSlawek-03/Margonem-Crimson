@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.4.5
+// @version      5.5.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -78,15 +78,6 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
-  const updateHpFill = () => {
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
-      const match = element.textContent.match(/(\d{1,3})\s*%/);
-      if (!match) return;
-      const health = Math.max(0, Math.min(100, Number(match[1])));
-      element.style.setProperty('--mc-hp-missing', `${100 - health}%`);
-    });
-  };
-  setInterval(updateHpFill, 250);
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -307,45 +298,17 @@
       box-shadow: none !important;
     }
     [data-mc='bottom-bg'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+    /* HP is deliberately split into the native static frame and native live
+       blood layer. The fill is owned by the game, so it always drains with HP. */
     [data-mc='hp-globe'] {
       background: none !important;
-      filter: drop-shadow(0 0 6px rgba(197, 21, 31, .52)) !important;
-      --mc-hp-missing: 0%;
+      filter: drop-shadow(0 0 5px rgba(190, 20, 30, .42)) !important;
       overflow: visible !important;
     }
-    .mc-hp-frame, .mc-hp-core {
-      position: absolute;
-      pointer-events: none;
-    }
-    .mc-hp-frame {
-      z-index: 2;
-      inset: 0;
-      background: url("${crimsonHpFrame}") center / contain no-repeat;
-    }
-    .mc-hp-core {
-      z-index: 3;
-      top: 19%;
-      left: 24%;
-      width: 52%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: hidden;
-      background: url("${crimsonHpCore}") center / cover no-repeat;
-    }
-    .mc-hp-core::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: var(--mc-hp-missing);
-      background: linear-gradient(180deg, rgba(5, 3, 4, .95), rgba(34, 5, 8, .78));
-      box-shadow: inset 0 -2px 5px rgba(163, 17, 29, .4);
-      pointer-events: none;
-    }
+    .mc-hp-frame, .mc-hp-core { display: none !important; }
     [data-mc='hp-globe'] .blood-frame,
     [data-mc='hp-globe'] .blood,
-    [data-mc='hp-globe'] .glass { opacity: 0 !important; }
+    [data-mc='hp-globe'] .glass { opacity: 1 !important; }
     [data-mc='hp-globe'] .hpp {
       position: relative !important;
       z-index: 5 !important;
