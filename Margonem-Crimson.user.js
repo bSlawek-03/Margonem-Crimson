@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.4.0
+// @version      6.4.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -77,8 +77,12 @@
       }
       visual.style.left = `${glass.offsetLeft}px`;
       visual.style.top = `${glass.offsetTop}px`;
-      visual.querySelector('.mc-hp-exact-core').style.clipPath = `inset(${100 - health}% 0 0 0)`;
+      const clip = `inset(${100 - health}% 0 0 0)`;
+      const core = visual.querySelector('.mc-hp-exact-core');
+      core.style.clipPath = clip;
+      core.style.webkitClipPath = clip;
       visual.querySelector('.mc-hp-exact-value').textContent = `${health}%`;
+      wrapper.querySelectorAll('.mc-hp-loss').forEach((oldLoss) => oldLoss.remove());
     });
     document.querySelector('#mc-hp-overlay')?.remove();
   };
@@ -96,7 +100,9 @@
       const value = wrapper.querySelector('.mc-hp-exact-value');
       if (match && core) {
         const health = Math.max(0, Math.min(100, Number(match[1])));
-        core.style.clipPath = `inset(${100 - health}% 0 0 0)`;
+        const clip = `inset(${100 - health}% 0 0 0)`;
+        core.style.clipPath = clip;
+        core.style.webkitClipPath = clip;
         if (value) value.textContent = `${health}%`;
       }
     });
