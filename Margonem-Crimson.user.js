@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.2.0
+// @version      6.2.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -62,6 +62,14 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
+    document.querySelectorAll("[data-mc='hp-globe'] .glass").forEach((glass) => {
+      glass.style.setProperty('background', `transparent url("${hpFrame}") center / 100% 100% no-repeat`, 'important');
+      glass.style.setProperty('opacity', '1', 'important');
+      glass.style.setProperty('filter', 'none', 'important');
+      glass.style.setProperty('mask', 'none', 'important');
+      glass.style.setProperty('-webkit-mask', 'none', 'important');
+      glass.style.setProperty('z-index', '3', 'important');
+    });
     document.querySelector('#mc-hp-overlay')?.remove();
   };
   const scheduleMarking = () => {
