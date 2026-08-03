@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.7.1
+// @version      5.7.2
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -13,7 +13,7 @@
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
 // @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-transparent.png
-// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-transparent-v2.png
+// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-transparent-v2.png?v=2
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -315,16 +315,17 @@
       overflow: visible !important;
       --mc-hp-empty-height: 0%;
     }
-    [data-mc='hp-globe'] .blood-frame,
-    [data-mc='hp-globe'] .blood,
-    [data-mc='hp-globe'] .glass { opacity: 0 !important; }
+    /* The game's own blood/glass layers must not sit above our two layers. */
+    [data-mc='hp-globe'] > :not(.mc-hp-core):not(.mc-hp-frame):not(.hpp) {
+      opacity: 0 !important;
+    }
     .mc-hp-core {
       position: absolute;
       top: 16%;
       left: 28%;
       width: 44%;
       aspect-ratio: 1;
-      z-index: 2;
+      z-index: 20;
       overflow: hidden;
       border-radius: 50%;
       pointer-events: none;
@@ -345,13 +346,13 @@
     .mc-hp-frame {
       position: absolute;
       inset: 0;
-      z-index: 3;
+      z-index: 21;
       pointer-events: none;
       background: url("${hpFrame}") center / contain no-repeat;
     }
     [data-mc='hp-globe'] .hpp {
       position: relative !important;
-      z-index: 5 !important;
+      z-index: 22 !important;
       color: #ffe7e7 !important;
       font-family: Georgia, serif !important;
       font-weight: bold !important;
