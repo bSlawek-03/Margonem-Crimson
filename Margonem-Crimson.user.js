@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.0.0
+// @version      5.1.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,6 +12,8 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
+// @resource     crimsonHp https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-orb.png
+// @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // ==/UserScript==
@@ -21,6 +23,8 @@
   const crimsonTop = GM_getResourceURL('crimsonTop');
   const crimsonBottom = GM_getResourceURL('crimsonBottom');
   const crimsonPanel = GM_getResourceURL('crimsonPanel');
+  const crimsonHp = GM_getResourceURL('crimsonHp');
+  const crimsonButton = GM_getResourceURL('crimsonButton');
 
   // Margonem does not expose stable IDs for these elements.  Mark the exact
   // native nodes once they appear, then style the marker rather than broad
@@ -48,6 +52,13 @@
     markerMap.forEach(([selector, name]) => {
       document.querySelectorAll(selector).forEach((element) => { element.dataset.mc = name; });
     });
+    const top = document.querySelector('.top');
+    if (top && !top.querySelector('#mc-top-frame')) {
+      const frame = document.createElement('div');
+      frame.id = 'mc-top-frame';
+      frame.setAttribute('aria-hidden', 'true');
+      top.appendChild(frame);
+    }
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -194,17 +205,32 @@
     .mini-map-buttons .button:hover, .window-controlls > *:hover {
       filter: sepia(1) saturate(2.7) hue-rotate(300deg) brightness(.98) contrast(1.2) drop-shadow(0 0 4px #c6232d) !important;
     }
+    .top-left .widget-button, .top-right .widget-button, .bottom .widget-button {
+      border: 3px solid transparent !important;
+      border-image-source: url("${crimsonButton}") !important;
+      border-image-slice: 112 !important;
+      border-image-width: 3px !important;
+      border-image-repeat: stretch !important;
+      border-radius: 0 !important;
+    }
 
     /* Fixed game frame. These are script-owned markers, not broad game selectors.
        No height, width or position is modified. */
     [data-mc='top-bg'] {
       background-color: #100708 !important;
-      background-image: url("${crimsonTop}") !important;
-      background-repeat: no-repeat !important;
-      background-position: center !important;
-      background-size: 100% 100% !important;
+      background-image: linear-gradient(180deg, #16080a, #080607) !important;
       border: 0 !important;
       box-shadow: none !important;
+    }
+    #mc-top-frame {
+      position: absolute !important;
+      top: 49px !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 20px !important;
+      pointer-events: none !important;
+      z-index: 2 !important;
+      background: url("${crimsonTop}") center / 100% 100% no-repeat !important;
     }
     [data-mc='top-left'], [data-mc='top-right'] {
       background: linear-gradient(180deg, rgba(40, 8, 11, .80), rgba(7, 6, 7, .25)) !important;
@@ -224,6 +250,18 @@
       border: 0 !important;
       box-shadow: none !important;
     }
-    [data-mc='hp-globe'] { filter: drop-shadow(0 0 5px rgba(197, 21, 31, .35)) !important; }
+    [data-mc='hp-globe'] {
+      background: url("${crimsonHp}") center / 100% 100% no-repeat !important;
+      filter: drop-shadow(0 0 6px rgba(197, 21, 31, .52)) !important;
+    }
+    [data-mc='hp-globe'] .blood-frame,
+    [data-mc='hp-globe'] .blood,
+    [data-mc='hp-globe'] .glass { opacity: 0 !important; }
+    [data-mc='hp-globe'] .hpp {
+      color: #ffe7e7 !important;
+      font-family: Georgia, serif !important;
+      font-weight: bold !important;
+      text-shadow: 0 1px 2px #000, 0 0 5px #8f1019 !important;
+    }
   `);
 })();
