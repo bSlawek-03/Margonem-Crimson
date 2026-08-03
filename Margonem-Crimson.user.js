@@ -24,14 +24,15 @@
   // and no layout changes. The full header is added only after exact DOM mapping.
   GM_addStyle(`
     :root { --crimson:#bf2630; --crimson-hot:#ff5962; --crimson-panel:#130b0c; --crimson-line:#6c2028; --crimson-font:'Trebuchet MS',Arial,sans-serif; --crimson-title:Georgia,'Times New Roman',serif; }
-    #crimson-header { position:fixed;top:0;left:0;right:0;height:108px;z-index:2000;pointer-events:none;overflow:hidden;
+    #crimson-header { position:fixed;top:0;left:0;right:0;height:76px;z-index:2000;pointer-events:none;overflow:hidden;
       background:radial-gradient(ellipse at 50% 0,rgba(111,5,16,.42),transparent 50%),linear-gradient(180deg,#080606 0,#120607 68%,#050505 100%);
       border-bottom:1px solid #701a24;box-shadow:0 3px 14px rgba(0,0,0,.78); }
     #crimson-header::before { content:'';position:absolute;left:10%;right:10%;bottom:3px;height:5px;background:linear-gradient(90deg,transparent,#8d1d28 15%,#e2343e 50%,#8d1d28 85%,transparent);box-shadow:0 0 9px #bd1925; }
-    .crimson-header-dragon { position:absolute;top:-42px;width:178px;height:178px;background:url('${hebrehoth}') center/contain no-repeat;filter:drop-shadow(0 0 6px #7f0a14); }
-    .crimson-header-dragon.left { left:16px; }.crimson-header-dragon.right { right:16px;transform:scaleX(-1); }
-    .crimson-header-emblem { position:absolute;left:50%;bottom:4px;width:43px;height:43px;transform:translateX(-50%);background:url('${archdemon}') center/contain no-repeat;filter:drop-shadow(0 0 6px #c41c28); }
-    .interface-layer { top:108px!important;bottom:0!important;height:auto!important; }
+    .crimson-header-dragon { position:absolute;top:-28px;width:116px;height:116px;background:url('${hebrehoth}') center/contain no-repeat;filter:drop-shadow(0 0 6px #7f0a14); }
+    .crimson-header-dragon.left { left:20px; }.crimson-header-dragon.right { display:none; }
+    .crimson-header-emblem { position:absolute;right:22px;top:4px;width:58px;height:58px;left:auto;bottom:auto;transform:none;background:url('${archdemon}') center/contain no-repeat;filter:drop-shadow(0 0 6px #c41c28); }
+    .crimson-header-title { position:absolute;left:50%;top:8px;transform:translateX(-50%);color:#cf2933;font:700 38px/1 var(--crimson-title);letter-spacing:2px;text-transform:uppercase;text-shadow:0 2px #210104,0 0 8px #a90916,0 0 18px #470006; }
+    .interface-layer { top:76px!important;bottom:0!important;height:auto!important; }
     body,button,input,textarea,select,.c-window,.mz-window,.gargonem-window,.vaddonz-window,.popup-menu,.chat-modal,.mAlert {
       font-family:var(--crimson-font)!important;
     }
@@ -128,17 +129,17 @@
       border-top:1px solid #8e2530!important;
       box-shadow:0 -1px 0 #270509 inset,0 -10px 24px rgba(0,0,0,.55),0 -1px 10px rgba(205,26,37,.5)!important;
     }
-    .bottom-panel-of-bottom-positioner { position:relative!important; overflow:visible!important; }
+    .bottom-panel-of-bottom-positioner { position:relative!important; overflow:hidden!important; }
     .bottom-panel-of-bottom-positioner::before,.bottom-panel-of-bottom-positioner::after {
-      content:''; position:absolute; top:-15px; width:116px; height:42px; z-index:1; pointer-events:none;
+      content:''; position:absolute; top:1px; width:90px; height:24px; z-index:1; pointer-events:none;
       background:
         linear-gradient(135deg,transparent 0 12%,#100608 13% 20%,#8d2029 21% 23%,#210608 24% 38%,transparent 39% 46%,#8d2029 47% 49%,#160608 50% 67%,transparent 68%),
         linear-gradient(180deg,#160709,#4e1017 48%,#080506);
       border:1px solid #79202a; box-shadow:0 0 0 1px #1b0507 inset,0 0 9px rgba(186,18,29,.5);
       clip-path:polygon(0 63%,17% 25%,43% 0,100% 10%,82% 48%,100% 86%,42% 100%,18% 75%);
     }
-    .bottom-panel-of-bottom-positioner::before { left:calc(50% - 174px); }
-    .bottom-panel-of-bottom-positioner::after { right:calc(50% - 174px); transform:scaleX(-1); }
+    .bottom-panel-of-bottom-positioner::before { left:calc(50% - 142px); }
+    .bottom-panel-of-bottom-positioner::after { right:calc(50% - 142px); transform:scaleX(-1); }
     button,.button,.btn,.m-button,.gargonem-button,.vaddonz-btn,.mz-control,.tab,.mz-tabs__tab,.vaddonz-tabs__item {
       color:#f3ded8!important;
       background:linear-gradient(#4d1218,#160608)!important;
@@ -157,7 +158,7 @@
     if (document.getElementById('crimson-header')) return;
     const header = document.createElement('div');
     header.id = 'crimson-header';
-    header.innerHTML = '<i class="crimson-header-dragon left"></i><i class="crimson-header-dragon right"></i><i class="crimson-header-emblem"></i>';
+    header.innerHTML = '<i class="crimson-header-dragon left"></i><strong class="crimson-header-title">Margonem</strong><i class="crimson-header-emblem"></i>';
     document.body.appendChild(header);
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountHeader, { once:true }); else mountHeader();
