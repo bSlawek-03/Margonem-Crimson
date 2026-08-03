@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.0.1
+// @version      6.1.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,8 +12,8 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-transparent.png
-// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-transparent-v2.png?v=2
+// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-exact.png
+// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-exact.png
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
