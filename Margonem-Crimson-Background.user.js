@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         Margonem Crimson — Tło
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.0.0
-// @description  Czarne tło Crimson z tytanem i arcydemonem poza obszarem gry.
+// @version      1.2.0
+// @description  Czarne tło Crimson z arcydemonem po prawej stronie.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
 // @match        https://margonem.pl/*
 // @run-at       document-start
 // @grant        GM_addStyle
 // @grant        GM_getResourceURL
-// @resource     crimsonVoid https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-void-background.png?v=1
+// @resource     crimsonVoid https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-archdemon-background.png?v=2
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson-Background.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson-Background.user.js
 // ==/UserScript==
