@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.1.0
+// @version      5.2.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -67,6 +67,15 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
+  const updateHpFill = () => {
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
+      const match = element.textContent.match(/(\d{1,3})\s*%/);
+      if (!match) return;
+      const health = Math.max(0, Math.min(100, Number(match[1])));
+      element.style.setProperty('--mc-hp-missing', `${100 - health}%`);
+    });
+  };
+  setInterval(updateHpFill, 250);
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -109,6 +118,22 @@
     .header-label .text, .gargonem-window-title, .mz-window__title, .vaddonz-window__header-title {
       color: #ffe3dd !important;
       font-family: var(--mc-title) !important;
+    }
+    .close-button, .gargonem-close-button, .close-wrapper {
+      position: relative !important;
+      overflow: visible !important;
+    }
+    .close-button::after, .gargonem-close-button::after, .close-wrapper::after {
+      content: '\\00d7' !important;
+      position: absolute !important;
+      inset: 0 !important;
+      display: grid !important;
+      place-items: center !important;
+      color: #ffe4e4 !important;
+      font: bold 19px/1 Arial, sans-serif !important;
+      text-shadow: 0 1px 2px #000, 0 0 4px #d52d38 !important;
+      pointer-events: none !important;
+      z-index: 5 !important;
     }
     .c-window__bottom-bar, .interface-element-bottom-bar-background-stretch {
       background: linear-gradient(180deg, #1b080b, #090607) !important;
@@ -173,6 +198,15 @@
       background-image: linear-gradient(135deg, rgba(139, 25, 34, .14) 25%, transparent 25%, transparent 50%, rgba(139, 25, 34, .14) 50%, rgba(139, 25, 34, .14) 75%, transparent 75%) !important;
       background-size: 7px 7px !important;
     }
+    [data-mc='inventory-grid-frame'] {
+      background-color: #0b090a !important;
+      background-image:
+        linear-gradient(rgba(151, 38, 48, .68) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(151, 38, 48, .68) 1px, transparent 1px) !important;
+      background-size: 32px 32px !important;
+      box-shadow: 0 0 0 1px #7f2430 inset !important;
+    }
+    .inventory-grid, .inner-grid { background: transparent !important; }
     .interface-element-one-black-tile, .bags-navigation-bg {
       background: linear-gradient(145deg, #21080b, #090708) !important;
       border-color: #74202a !important;
@@ -224,7 +258,7 @@
     }
     #mc-top-frame {
       position: absolute !important;
-      top: 49px !important;
+      top: 66px !important;
       left: 0 !important;
       width: 100vw !important;
       height: 20px !important;
@@ -253,11 +287,29 @@
     [data-mc='hp-globe'] {
       background: url("${crimsonHp}") center / 100% 100% no-repeat !important;
       filter: drop-shadow(0 0 6px rgba(197, 21, 31, .52)) !important;
+      --mc-hp-missing: 0%;
+      overflow: visible !important;
+    }
+    [data-mc='hp-globe']::before {
+      content: '';
+      position: absolute;
+      z-index: 2;
+      top: 10%;
+      left: 29%;
+      width: 42%;
+      height: var(--mc-hp-missing);
+      max-height: 72%;
+      background: linear-gradient(180deg, rgba(5, 3, 4, .95), rgba(34, 5, 8, .78));
+      border-radius: 48% 48% 30% 30%;
+      box-shadow: inset 0 -2px 5px rgba(163, 17, 29, .4);
+      pointer-events: none;
     }
     [data-mc='hp-globe'] .blood-frame,
     [data-mc='hp-globe'] .blood,
     [data-mc='hp-globe'] .glass { opacity: 0 !important; }
     [data-mc='hp-globe'] .hpp {
+      position: relative !important;
+      z-index: 3 !important;
       color: #ffe7e7 !important;
       font-family: Georgia, serif !important;
       font-weight: bold !important;
