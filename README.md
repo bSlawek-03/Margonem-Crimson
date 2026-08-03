@@ -6,7 +6,7 @@ Motyw Tampermonkey dla Margonem. Używa wyłącznie dwóch dostarczonych grafik:
 
 W Tampermonkey otwórz ten adres i kliknij **Zainstaluj**:
 
-`https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson-Themes/main/Margonem-Crimson.user.js`
+`https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js`
 
 Tampermonkey będzie następnie sprawdzał aktualizacje z tego samego repozytorium.
 

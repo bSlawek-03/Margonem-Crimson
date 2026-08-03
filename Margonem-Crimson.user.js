@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Margonem Crimson — Hebrehoth
-// @namespace    https://github.com/bSlawek-03/Margonem-Crimson-Themes
+// @namespace    https://github.com/bSlawek-03/Margonem-Crimson
 // @version      2.0.0
 // @description  Czarno-czerwony motyw Margonem z grafikami Hebrehotha i Archdemona.
 // @author       Sławek
@@ -9,10 +9,10 @@
 // @run-at       document-start
 // @grant        GM_addStyle
 // @grant        GM_getResourceURL
-// @resource     hebrehoth https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson-Themes/main/assets/hebrehoth-smokoludzie.gif
-// @resource     archdemon https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson-Themes/main/assets/archdemon.gif
-// @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson-Themes/main/Margonem-Crimson.user.js
-// @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson-Themes/main/Margonem-Crimson.user.js
+// @resource     hebrehoth https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hebrehoth-smokoludzie.gif
+// @resource     archdemon https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/archdemon.gif
+// @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
+// @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // ==/UserScript==
 
 (() => {
