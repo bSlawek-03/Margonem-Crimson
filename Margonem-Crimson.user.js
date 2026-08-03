@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.7.2
+// @version      5.8.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -62,15 +62,8 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
-      element.querySelectorAll('.mc-hp-art, .mc-hp-empty').forEach((child) => child.remove());
-      if (element.querySelector('.mc-hp-frame')) return;
-      const core = document.createElement('div');
-      core.className = 'mc-hp-core';
-      const frame = document.createElement('div');
-      frame.className = 'mc-hp-frame';
-      element.append(core, frame);
-    });
+    document.querySelectorAll("[data-mc='hp-globe'] .mc-hp-frame, [data-mc='hp-globe'] .mc-hp-core, [data-mc='hp-globe'] .mc-hp-art, [data-mc='hp-globe'] .mc-hp-empty").forEach((child) => child.remove());
+    requestAnimationFrame(updateHpOverlay);
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -79,14 +72,30 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
-  setInterval(() => {
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
-      const match = element.textContent.match(/(\d{1,3})\s*%/);
-      if (!match) return;
-      const health = Math.max(0, Math.min(100, Number(match[1])));
-      element.style.setProperty('--mc-hp-empty-height', `${100 - health}%`);
-    });
-  }, 250);
+  function updateHpOverlay() {
+    const source = document.querySelector("[data-mc='hp-globe']");
+    if (!source || !document.body) return;
+    const match = source.textContent.match(/(\d{1,3})\s*%/);
+    if (!match) return;
+    const health = Math.max(0, Math.min(100, Number(match[1])));
+    source.style.setProperty('visibility', 'hidden', 'important');
+    let overlay = document.querySelector('#mc-hp-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'mc-hp-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.innerHTML = '<div class="mc-hp-core"></div><div class="mc-hp-frame"></div><div class="mc-hp-value"></div>';
+      document.body.appendChild(overlay);
+    }
+    const rect = source.getBoundingClientRect();
+    overlay.style.left = `${rect.left}px`;
+    overlay.style.top = `${rect.top}px`;
+    overlay.style.width = `${rect.width}px`;
+    overlay.style.height = `${rect.height}px`;
+    overlay.style.setProperty('--mc-hp-empty-height', `${100 - health}%`);
+    overlay.querySelector('.mc-hp-value').textContent = `${health}%`;
+  }
+  setInterval(updateHpOverlay, 250);
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -357,6 +366,25 @@
       font-family: Georgia, serif !important;
       font-weight: bold !important;
       text-shadow: 0 1px 2px #000, 0 0 5px #8f1019 !important;
+    }
+    #mc-hp-overlay {
+      position: fixed;
+      z-index: 2147483000;
+      pointer-events: none;
+      isolation: isolate;
+      filter: drop-shadow(0 0 5px rgba(190, 20, 30, .42));
+    }
+    #mc-hp-overlay .mc-hp-value {
+      position: absolute;
+      inset: 0;
+      z-index: 22;
+      display: grid;
+      place-items: center;
+      color: #ffe7e7;
+      font-family: Georgia, serif;
+      font-size: clamp(18px, 2.45vh, 28px);
+      font-weight: bold;
+      text-shadow: 0 1px 2px #000, 0 0 5px #8f1019;
     }
   `);
 })();
