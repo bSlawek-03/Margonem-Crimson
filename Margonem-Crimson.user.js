@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.4.1
+// @version      5.4.2
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -289,10 +289,10 @@
     }
     #mc-top-frame {
       position: absolute !important;
-      top: 78px !important;
+      top: 64px !important;
       left: 0 !important;
       width: 100vw !important;
-      height: 20px !important;
+      height: 11px !important;
       pointer-events: none !important;
       z-index: 2 !important;
       background: url("${crimsonTop}") center / 100% 100% no-repeat !important;
