@@ -32,7 +32,7 @@
     .crimson-header-dragon.left { left:22px; }.crimson-header-dragon.right { display:none; }
     .crimson-header-emblem { position:absolute;right:34px;top:14px;width:98px;height:98px;left:auto;bottom:auto;transform:none;background:url('${archdemon}') center/contain no-repeat;filter:drop-shadow(0 0 8px #c41c28); }
     .crimson-header-title { position:absolute;left:50%;top:23px;transform:translateX(-50%);color:#cf2933;font:700 48px/1 var(--crimson-title);letter-spacing:2px;text-transform:uppercase;text-shadow:0 2px #210104,0 0 8px #a90916,0 0 18px #470006; }
-    .interface-layer { top:132px!important;bottom:0!important;height:auto!important; }
+    .interface-layer { top:0!important;bottom:0!important;height:auto!important; }
     body,button,input,textarea,select,.c-window,.mz-window,.gargonem-window,.vaddonz-window,.popup-menu,.chat-modal,.mAlert {
       font-family:var(--crimson-font)!important;
     }
@@ -123,12 +123,19 @@
       border:2px solid #d53a42!important;border-radius:50%!important;
       box-shadow:0 0 0 2px #340509 inset,0 0 13px rgba(222,28,39,.72)!important;
     }
+    .hp-indicator-wrapper,.hp-indicator {
+      background:radial-gradient(circle at 34% 27%,#ff8586 0,#e83c44 23%,#8a1018 55%,#260407 100%)!important;
+      border-radius:50%!important;box-shadow:0 0 0 2px #2c0508 inset,0 0 11px rgba(230,31,43,.7)!important;
+    }
+    .hp-indicator .blood-frame,.hp-indicator .glass { opacity:.3!important; }
     /* Bottom battle rail: layered metal, shadow and two claw-like side ornaments. */
     .bottom > .bg,.bottom-panel-of-bottom-positioner {
       background:linear-gradient(180deg,#090607 0,#2f090e 24%,#100607 55%,#050505 100%)!important;
       border-top:1px solid #8e2530!important;
       box-shadow:0 -1px 0 #270509 inset,0 -10px 24px rgba(0,0,0,.55),0 -1px 10px rgba(205,26,37,.5)!important;
     }
+    .bottom { height:82px!important;bottom:0!important; }
+    .bottom > .bg,.bottom > .content { height:82px!important;min-height:0!important; }
     .bottom-panel-of-bottom-positioner { position:relative!important; overflow:hidden!important; }
     .bottom-panel-of-bottom-positioner::before,.bottom-panel-of-bottom-positioner::after {
       content:''; position:absolute; top:1px; width:90px; height:24px; z-index:1; pointer-events:none;
@@ -154,12 +161,6 @@
     }
   `);
 
-  const mountHeader = () => {
-    if (document.getElementById('crimson-header')) return;
-    const header = document.createElement('div');
-    header.id = 'crimson-header';
-    header.innerHTML = '<i class="crimson-header-dragon left"></i><strong class="crimson-header-title">Margonem</strong><i class="crimson-header-emblem"></i>';
-    document.body.appendChild(header);
-  };
+  const mountHeader = () => {};
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountHeader, { once:true }); else mountHeader();
 })();
