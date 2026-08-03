@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.8.0
+// @version      5.8.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -88,10 +88,12 @@
       document.body.appendChild(overlay);
     }
     const rect = source.getBoundingClientRect();
-    overlay.style.left = `${rect.left}px`;
-    overlay.style.top = `${rect.top}px`;
-    overlay.style.width = `${rect.width}px`;
-    overlay.style.height = `${rect.height}px`;
+    // The native wrapper is a wide rectangle; the orb itself must stay square.
+    const size = Math.max(100, Math.min(118, rect.height * 1.34));
+    overlay.style.left = `${rect.left + (rect.width - size) / 2}px`;
+    overlay.style.top = `${rect.top + (rect.height - size) / 2}px`;
+    overlay.style.width = `${size}px`;
+    overlay.style.height = `${size}px`;
     overlay.style.setProperty('--mc-hp-empty-height', `${100 - health}%`);
     overlay.querySelector('.mc-hp-value').textContent = `${health}%`;
   }
@@ -330,9 +332,9 @@
     }
     .mc-hp-core {
       position: absolute;
-      top: 16%;
-      left: 28%;
-      width: 44%;
+      top: 19%;
+      left: 19%;
+      width: 62%;
       aspect-ratio: 1;
       z-index: 20;
       overflow: hidden;
@@ -373,6 +375,14 @@
       pointer-events: none;
       isolation: isolate;
       filter: drop-shadow(0 0 5px rgba(190, 20, 30, .42));
+    }
+    #mc-hp-overlay::before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      inset: 7%;
+      border-radius: 50%;
+      background: #080708;
     }
     #mc-hp-overlay .mc-hp-value {
       position: absolute;
