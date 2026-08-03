@@ -128,25 +128,6 @@
       border-radius:50%!important;box-shadow:0 0 0 2px #2c0508 inset,0 0 11px rgba(230,31,43,.7)!important;
     }
     .hp-indicator .blood-frame,.hp-indicator .glass { opacity:.3!important; }
-    /* Bottom battle rail: layered metal, shadow and two claw-like side ornaments. */
-    .bottom > .bg,.bottom-panel-of-bottom-positioner {
-      background:linear-gradient(180deg,#090607 0,#2f090e 24%,#100607 55%,#050505 100%)!important;
-      border-top:1px solid #8e2530!important;
-      box-shadow:0 -1px 0 #270509 inset,0 -10px 24px rgba(0,0,0,.55),0 -1px 10px rgba(205,26,37,.5)!important;
-    }
-    .bottom { height:82px!important;bottom:0!important; }
-    .bottom > .bg,.bottom > .content { height:82px!important;min-height:0!important; }
-    .bottom-panel-of-bottom-positioner { position:relative!important; overflow:hidden!important; }
-    .bottom-panel-of-bottom-positioner::before,.bottom-panel-of-bottom-positioner::after {
-      content:''; position:absolute; top:1px; width:90px; height:24px; z-index:1; pointer-events:none;
-      background:
-        linear-gradient(135deg,transparent 0 12%,#100608 13% 20%,#8d2029 21% 23%,#210608 24% 38%,transparent 39% 46%,#8d2029 47% 49%,#160608 50% 67%,transparent 68%),
-        linear-gradient(180deg,#160709,#4e1017 48%,#080506);
-      border:1px solid #79202a; box-shadow:0 0 0 1px #1b0507 inset,0 0 9px rgba(186,18,29,.5);
-      clip-path:polygon(0 63%,17% 25%,43% 0,100% 10%,82% 48%,100% 86%,42% 100%,18% 75%);
-    }
-    .bottom-panel-of-bottom-positioner::before { left:calc(50% - 142px); }
-    .bottom-panel-of-bottom-positioner::after { right:calc(50% - 142px); transform:scaleX(-1); }
     button,.button,.btn,.m-button,.gargonem-button,.vaddonz-btn,.mz-control,.tab,.mz-tabs__tab,.vaddonz-tabs__item {
       color:#f3ded8!important;
       background:linear-gradient(#4d1218,#160608)!important;
