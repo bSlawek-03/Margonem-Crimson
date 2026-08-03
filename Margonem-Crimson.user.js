@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.1.0
+// @version      6.2.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -300,13 +300,7 @@
       text-shadow: 0 1px 2px #000, 0 0 5px #8f1019 !important;
     }
     [data-mc='hp-globe'] .blood-frame {
-      position: absolute !important;
-      inset: 0 !important;
-      z-index: 3 !important;
-      background-image: url("${hpFrame}") !important;
-      background-repeat: no-repeat !important;
-      background-position: center !important;
-      background-size: contain !important;
+      opacity: 0 !important;
     }
     [data-mc='hp-globe'] .blood {
       position: relative !important;
@@ -318,7 +312,10 @@
       box-shadow: none !important;
     }
     [data-mc='hp-globe'] .glass {
-      opacity: 0 !important;
+      z-index: 3 !important;
+      opacity: 1 !important;
+      pointer-events: none !important;
+      background: transparent url("${hpFrame}") center / 100% 100% no-repeat !important;
     }
   `);
 })();
