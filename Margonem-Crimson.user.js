@@ -1,19 +1,26 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      4.0.0
+// @version      5.0.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
 // @match        https://margonem.pl/*
 // @run-at       document-start
 // @grant        GM_addStyle
+// @grant        GM_getResourceURL
+// @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
+// @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
+// @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // ==/UserScript==
 
 (() => {
   'use strict';
+  const crimsonTop = GM_getResourceURL('crimsonTop');
+  const crimsonBottom = GM_getResourceURL('crimsonBottom');
+  const crimsonPanel = GM_getResourceURL('crimsonPanel');
 
   // Margonem does not expose stable IDs for these elements.  Mark the exact
   // native nodes once they appear, then style the marker rather than broad
@@ -29,6 +36,11 @@
     ['.right-main-column-wrapper', 'equipment-column'],
     ['.inventory-grid-bg', 'inventory-bg'],
     ['.interface-element-item-slot-grid-stretch', 'inventory-grid-frame']
+    ,['.c-window', 'panel-window']
+    ,['.mz-window', 'panel-window']
+    ,['.gargonem-window', 'panel-window']
+    ,['.vaddonz-window', 'panel-window']
+    ,['.chat-modal', 'panel-window']
   ];
   let queued = false;
   const markInterface = () => {
@@ -64,9 +76,13 @@
     }
 
     /* Base window chrome: regular game, Gargonem and addon windows. */
-    .c-window, .mz-window, .gargonem-window, .vaddonz-window, .popup-menu, .chat-modal, .mAlert {
-      background: linear-gradient(145deg, rgba(31, 13, 15, .98), rgba(8, 7, 7, .98)) !important;
-      border: 1px solid var(--mc-border) !important;
+    [data-mc='panel-window'], .popup-menu, .mAlert {
+      background-color: #100b0b !important;
+      background-image: url("${crimsonPanel}") !important;
+      background-size: 100% 100% !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      border: 0 !important;
       border-radius: 4px !important;
       box-shadow: 0 0 0 1px #210508 inset, 0 10px 26px rgba(0, 0, 0, .72), 0 0 12px rgba(153, 12, 23, .18) !important;
       color: var(--mc-text) !important;
@@ -183,14 +199,12 @@
        No height, width or position is modified. */
     [data-mc='top-bg'] {
       background-color: #100708 !important;
-      background-image:
-        repeating-linear-gradient(0deg, rgba(255, 69, 74, .035) 0 1px, transparent 1px 4px),
-        linear-gradient(180deg, #1c0709 0%, #080607 82%) !important;
-      background-repeat: repeat, no-repeat !important;
-      background-position: 0 0, 0 0 !important;
-      background-size: auto, auto !important;
-      border-bottom: 1px solid #8a1e28 !important;
-      box-shadow: inset 0 -2px 0 #210508, 0 2px 8px rgba(175, 17, 28, .28) !important;
+      background-image: url("${crimsonTop}") !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      background-size: 100% 100% !important;
+      border: 0 !important;
+      box-shadow: none !important;
     }
     [data-mc='top-left'], [data-mc='top-right'] {
       background: linear-gradient(180deg, rgba(40, 8, 11, .80), rgba(7, 6, 7, .25)) !important;
@@ -202,12 +216,14 @@
     /* Bottom: only paint the native centre layer. No pseudo-elements, no added
        frame and no dimensions — this removes the oversized lower decoration. */
     [data-mc='bottom-bg'] {
-      background: repeating-linear-gradient(0deg, rgba(255, 69, 74, .032) 0 1px, transparent 1px 4px),
-        linear-gradient(180deg, #080607, #1a0709 55%, #080607) !important;
-      border-top: 1px solid #8a1e28 !important;
-      box-shadow: inset 0 2px 0 #250609, 0 -2px 8px rgba(175, 17, 28, .26) !important;
+      background-color: #0a0708 !important;
+      background-image: url("${crimsonBottom}") !important;
+      background-repeat: no-repeat !important;
+      background-position: center bottom !important;
+      background-size: 100% 100% !important;
+      border: 0 !important;
+      box-shadow: none !important;
     }
-    [data-mc='bottom-side'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
     [data-mc='hp-globe'] { filter: drop-shadow(0 0 5px rgba(197, 21, 31, .35)) !important; }
   `);
 })();
