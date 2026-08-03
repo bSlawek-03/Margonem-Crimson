@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.2.3
+// @version      6.2.4
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -71,6 +71,11 @@
       glass.style.setProperty('mix-blend-mode', 'normal', 'important');
       glass.style.setProperty('background-blend-mode', 'normal', 'important');
       glass.style.setProperty('z-index', '3', 'important');
+    });
+    document.querySelectorAll("[data-mc='hp-globe'] .hp-indicator").forEach((indicator) => {
+      indicator.style.setProperty('background', `transparent url("${hpFrame}") center / 100% 100% no-repeat`, 'important');
+      indicator.style.setProperty('filter', 'none', 'important');
+      indicator.style.setProperty('mix-blend-mode', 'normal', 'important');
     });
     document.querySelector('#mc-hp-overlay')?.remove();
   };
@@ -311,6 +316,11 @@
     }
     [data-mc='hp-globe'] .blood-frame {
       opacity: 0 !important;
+    }
+    [data-mc='hp-globe'] .hp-indicator {
+      background: transparent url("${hpFrame}") center / 100% 100% no-repeat !important;
+      filter: none !important;
+      mix-blend-mode: normal !important;
     }
     [data-mc='hp-globe'] .blood {
       position: relative !important;
