@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.2.4
+// @version      6.3.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,7 +12,7 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-exact.png?v=2
+// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-full-exact.png?v=1
 // @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-exact.png?v=2
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -62,7 +62,18 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
-    document.querySelectorAll("[data-mc='hp-globe'] .glass").forEach((glass) => {
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((wrapper) => {
+      const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
+      const health = match ? Math.max(0, Math.min(100, Number(match[1]))) : 100;
+      const glass = wrapper.querySelector('.glass');
+      if (!glass) return;
+      let loss = glass.querySelector('.mc-hp-loss');
+      if (!loss) {
+        loss = document.createElement('div');
+        loss.className = 'mc-hp-loss';
+        glass.appendChild(loss);
+      }
+      loss.style.height = `${(100 - health) * 0.66}%`;
       glass.style.setProperty('background', `transparent url("${hpFrame}") center / 100% 100% no-repeat`, 'important');
       glass.style.setProperty('opacity', '1', 'important');
       glass.style.setProperty('filter', 'none', 'important');
@@ -73,7 +84,7 @@
       glass.style.setProperty('z-index', '3', 'important');
     });
     document.querySelectorAll("[data-mc='hp-globe'] .hp-indicator").forEach((indicator) => {
-      indicator.style.setProperty('background', `transparent url("${hpFrame}") center / 100% 100% no-repeat`, 'important');
+      indicator.style.setProperty('background', 'transparent', 'important');
       indicator.style.setProperty('filter', 'none', 'important');
       indicator.style.setProperty('mix-blend-mode', 'normal', 'important');
     });
@@ -86,6 +97,13 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
+  setInterval(() => {
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((wrapper) => {
+      const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
+      const loss = wrapper.querySelector('.mc-hp-loss');
+      if (match && loss) loss.style.height = `${(100 - Number(match[1])) * 0.66}%`;
+    });
+  }, 250);
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
    * Deliberately excluded: map layers, map canvases, .item, .icon and bottom HUD.
@@ -308,7 +326,7 @@
     /* HP globe: two independent transparent graphics — frame and HP core. */
     [data-mc='hp-globe'] .hpp {
       position: relative !important;
-      z-index: 4 !important;
+      z-index: 5 !important;
       color: #ffe7e7 !important;
       font-family: Georgia, serif !important;
       font-weight: bold !important;
@@ -318,7 +336,8 @@
       opacity: 0 !important;
     }
     [data-mc='hp-globe'] .hp-indicator {
-      background: transparent url("${hpFrame}") center / 100% 100% no-repeat !important;
+      z-index: 4 !important;
+      background: transparent !important;
       filter: none !important;
       mix-blend-mode: normal !important;
     }
@@ -330,14 +349,28 @@
       background-position: center bottom !important;
       background-size: 100% auto !important;
       box-shadow: none !important;
+      opacity: 0 !important;
     }
     [data-mc='hp-globe'] .glass {
+      position: relative !important;
       z-index: 3 !important;
       opacity: 1 !important;
       pointer-events: none !important;
       mix-blend-mode: normal !important;
       background-blend-mode: normal !important;
       background: transparent url("${hpFrame}") center / 100% 100% no-repeat !important;
+    }
+    [data-mc='hp-globe'] .mc-hp-loss {
+      position: absolute;
+      z-index: 1;
+      top: 17%;
+      left: 21.5%;
+      width: 57%;
+      max-height: 66%;
+      background: #080506;
+      border-radius: 48% 48% 22% 22%;
+      box-shadow: inset 0 -2px 4px rgba(145, 8, 16, .4);
+      pointer-events: none;
     }
   `);
 })();
