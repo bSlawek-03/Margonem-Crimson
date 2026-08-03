@@ -1,24 +1,19 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.1.0
+// @version      3.2.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
 // @match        https://margonem.pl/*
 // @run-at       document-start
 // @grant        GM_addStyle
-// @grant        GM_getResourceURL
-// @resource     hebrehoth https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hebrehoth-smokoludzie.gif
-// @resource     archdemon https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/archdemon.gif
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // ==/UserScript==
 
 (() => {
   'use strict';
-  const hebrehoth = GM_getResourceURL('hebrehoth');
-  const archdemon = GM_getResourceURL('archdemon');
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -102,11 +97,11 @@
     ::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #3c0a0e, #9a2029, #3c0a0e); border: 1px solid #b23840; }
 
     /* Equipment frame and grid: item sprites/canvases are never selected here. */
-    .interface-element-equipment, .interface-element-equipment-with-additional-bag,
+    .right-main-column-wrapper, .character_wrapper, .interface-element-equipment, .interface-element-equipment-with-additional-bag,
     .equipment-wrapper-outline, .equipment-outline-1, .equipment-outline-2,
     .equipment-outline-3, .equipment-outline-4, .inventory_wrapper, .inventory-grid-bg,
     .bags-navigation-bg, .interface-element-bag-eq-icon-background, .build-icon-wrapper {
-      background: linear-gradient(145deg, #26090d, #0a0808 60%, #3b0c11) !important;
+      background: linear-gradient(145deg, #240b0d, #090707 60%, #31090d) !important;
       border-color: #7b2630 !important;
       box-shadow: 0 0 0 1px #240609 inset, 0 0 8px rgba(154, 14, 25, .25) !important;
     }
@@ -116,6 +111,15 @@
       box-shadow: 0 0 0 1px #230609 inset !important;
     }
     .eq-slot:hover { border-color: #f4505a !important; box-shadow: 0 0 9px rgba(232, 31, 43, .7) !important; }
+    .inventory-grid-bg, .interface-element-item-slot-grid-stretch, .inventory-grid, .inner-grid {
+      background-color: #10090a !important;
+      background-image: linear-gradient(135deg, rgba(139, 25, 34, .14) 25%, transparent 25%, transparent 50%, rgba(139, 25, 34, .14) 50%, rgba(139, 25, 34, .14) 75%, transparent 75%) !important;
+      background-size: 7px 7px !important;
+    }
+    .interface-element-one-black-tile, .bags-navigation-bg {
+      background: linear-gradient(145deg, #21080b, #090708) !important;
+      border-color: #74202a !important;
+    }
 
     /* Chat and lists — entries keep game-assigned category colours. */
     .chat-layer .chat-modal, .chat-layer .chat-overlay, .ll-chat-message-list,
@@ -138,11 +142,11 @@
     /* Original top/menu icons: preserve glyphs and recolour the green skin only. */
     .widget-button, .ie-icon, .manage-hamburger-button, .attach-icon-show-handheld,
     .mini-map-buttons .button, .window-controlls > *, .transparent-window-buttons-menu > * {
-      filter: sepia(1) saturate(2.25) hue-rotate(304deg) brightness(.94) contrast(1.16) !important;
+      filter: sepia(1) saturate(1.9) hue-rotate(300deg) brightness(.72) contrast(1.22) !important;
     }
     .widget-button:hover, .ie-icon:hover, .manage-hamburger-button:hover, .attach-icon-show-handheld:hover,
     .mini-map-buttons .button:hover, .window-controlls > *:hover {
-      filter: sepia(1) saturate(3) hue-rotate(304deg) brightness(1.15) contrast(1.17) drop-shadow(0 0 4px #e62c38) !important;
+      filter: sepia(1) saturate(2.7) hue-rotate(300deg) brightness(.98) contrast(1.2) drop-shadow(0 0 4px #c6232d) !important;
     }
 
     /* Fixed game frame. Only the native background layers are painted: no height,
@@ -150,13 +154,11 @@
     .top > .bg {
       background-color: #100708 !important;
       background-image:
-        url("${hebrehoth}"),
-        url("${archdemon}"),
         repeating-linear-gradient(0deg, rgba(255, 69, 74, .035) 0 1px, transparent 1px 4px),
         linear-gradient(180deg, #1c0709 0%, #080607 82%) !important;
-      background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
-      background-position: 3.5% 1px, 96.5% 6px, 0 0, 0 0 !important;
-      background-size: 92px auto, 92px auto, auto, auto !important;
+      background-repeat: repeat, no-repeat !important;
+      background-position: 0 0, 0 0 !important;
+      background-size: auto, auto !important;
       border-bottom: 1px solid #8a1e28 !important;
       box-shadow: inset 0 -2px 0 #210508, 0 2px 8px rgba(175, 17, 28, .28) !important;
     }
