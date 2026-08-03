@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      6.5.0
+// @version      6.5.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,7 +12,6 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     hpBase https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-full-exact.png?v=1
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -23,7 +22,6 @@
   const crimsonTop = GM_getResourceURL('crimsonTop');
   const crimsonBottom = GM_getResourceURL('crimsonBottom');
   const crimsonPanel = GM_getResourceURL('crimsonPanel');
-  const hpBase = GM_getResourceURL('hpBase');
   const crimsonButton = GM_getResourceURL('crimsonButton');
 
   // Margonem does not expose stable IDs for these elements.  Mark the exact
@@ -36,7 +34,6 @@
     ['.bottom > .bg', 'bottom-bg'],
     ['.bottom > .bg-additional-widget-left', 'bottom-side'],
     ['.bottom > .bg-additional-widget-right', 'bottom-side'],
-    ['.hp-indicator-wrapper', 'hp-globe'],
     ['.hud-container', 'hero-hud'],
     ['.right-main-column-wrapper', 'equipment-column'],
     ['.inventory-grid-bg', 'inventory-bg'],
@@ -60,26 +57,6 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((wrapper) => {
-      const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
-      const health = match ? Math.max(0, Math.min(100, Number(match[1]))) : 100;
-      const glass = wrapper.querySelector('.glass');
-      if (!glass) return;
-      let visual = wrapper.querySelector('.mc-hp-exact');
-      if (!visual) {
-        visual = document.createElement('div');
-        visual.className = 'mc-hp-exact';
-        visual.setAttribute('aria-hidden', 'true');
-        visual.innerHTML = '<div class="mc-hp-exact-base"></div><div class="mc-hp-exact-loss"><div></div></div><div class="mc-hp-exact-value"></div>';
-        wrapper.appendChild(visual);
-      }
-      visual.style.left = `${glass.offsetLeft}px`;
-      visual.style.top = `${glass.offsetTop}px`;
-      visual.querySelector('.mc-hp-exact-loss > div').style.height = `${(100 - health) * .64}px`;
-      visual.querySelector('.mc-hp-exact-value').textContent = `${health}%`;
-      wrapper.querySelectorAll('.mc-hp-loss').forEach((oldLoss) => oldLoss.remove());
-    });
-    document.querySelector('#mc-hp-overlay')?.remove();
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -88,18 +65,6 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
-  setInterval(() => {
-    document.querySelectorAll("[data-mc='hp-globe']").forEach((wrapper) => {
-      const match = wrapper.textContent.match(/(\d{1,3})\s*%/);
-      const loss = wrapper.querySelector('.mc-hp-exact-loss > div');
-      const value = wrapper.querySelector('.mc-hp-exact-value');
-      if (match && loss) {
-        const health = Math.max(0, Math.min(100, Number(match[1])));
-        loss.style.height = `${(100 - health) * .64}px`;
-        if (value) value.textContent = `${health}%`;
-      }
-    });
-  }, 250);
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
    * Deliberately excluded: map layers, map canvases, .item, .icon and bottom HUD.
@@ -320,71 +285,5 @@
     }
     [data-mc='bottom-bg'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
     /* HP globe: two independent transparent graphics — frame and HP core. */
-    [data-mc='hp-globe'] .blood-frame,
-    [data-mc='hp-globe'] .blood,
-    [data-mc='hp-globe'] .glass,
-    [data-mc='hp-globe'] .hpp {
-      visibility: hidden !important;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact {
-      position: absolute !important;
-      width: 102px !important;
-      height: 92px !important;
-      min-width: 102px !important;
-      min-height: 92px !important;
-      max-width: 102px !important;
-      max-height: 92px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      pointer-events: none !important;
-      overflow: hidden !important;
-      isolation: isolate !important;
-      z-index: 100 !important;
-      transform: none !important;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact-base {
-      position: absolute !important;
-      inset: 0 !important;
-      width: 102px !important;
-      height: 92px !important;
-      background-repeat: no-repeat !important;
-      background-position: 0 0 !important;
-      background-size: 102px 92px !important;
-      transform: none !important;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact-base {
-      z-index: 1 !important;
-      background-image: url("${hpBase}") !important;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact-loss {
-      position: absolute !important;
-      z-index: 2 !important;
-      left: 22px !important;
-      top: 18px !important;
-      width: 58px !important;
-      height: 64px !important;
-      overflow: hidden !important;
-      border-radius: 48% 48% 26% 26% !important;
-      pointer-events: none !important;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact-loss > div {
-      width: 100% !important;
-      height: 0;
-      background: linear-gradient(180deg, rgba(11, 5, 7, .98), rgba(20, 5, 7, .90)) !important;
-      box-shadow: inset 0 -2px 4px rgba(115, 0, 8, .5) !important;
-      transition: height .15s linear;
-    }
-    [data-mc='hp-globe'] .mc-hp-exact-value {
-      position: absolute !important;
-      z-index: 3 !important;
-      top: 40px !important;
-      left: 0 !important;
-      width: 102px !important;
-      color: #fff3f3 !important;
-      font: 700 16px/20px Georgia, 'Times New Roman', serif !important;
-      letter-spacing: -.5px !important;
-      text-align: center !important;
-      text-shadow: 0 2px 2px #000, 0 0 5px #81030a !important;
-    }
   `);
 })();
