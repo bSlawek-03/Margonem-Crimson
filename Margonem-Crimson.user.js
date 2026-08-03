@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.5.1
+// @version      5.7.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -12,8 +12,8 @@
 // @resource     crimsonTop https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-top-frame.png
 // @resource     crimsonBottom https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-bottom-frame.png
 // @resource     crimsonPanel https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-panel-frame.png
-// @resource     crimsonHpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-frame.png
-// @resource     crimsonHpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-hp-core.png
+// @resource     hpFrame https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-frame-transparent.png
+// @resource     hpCore https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/hp-core-transparent-v2.png
 // @resource     crimsonButton https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-button-frame.png
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson.user.js
@@ -24,8 +24,8 @@
   const crimsonTop = GM_getResourceURL('crimsonTop');
   const crimsonBottom = GM_getResourceURL('crimsonBottom');
   const crimsonPanel = GM_getResourceURL('crimsonPanel');
-  const crimsonHpFrame = GM_getResourceURL('crimsonHpFrame');
-  const crimsonHpCore = GM_getResourceURL('crimsonHpCore');
+  const hpFrame = GM_getResourceURL('hpFrame');
+  const hpCore = GM_getResourceURL('hpCore');
   const crimsonButton = GM_getResourceURL('crimsonButton');
 
   // Margonem does not expose stable IDs for these elements.  Mark the exact
@@ -62,7 +62,15 @@
       frame.setAttribute('aria-hidden', 'true');
       top.appendChild(frame);
     }
-    document.querySelectorAll("[data-mc='hp-globe'] .mc-hp-frame, [data-mc='hp-globe'] .mc-hp-core").forEach((element) => element.remove());
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
+      element.querySelectorAll('.mc-hp-art, .mc-hp-empty').forEach((child) => child.remove());
+      if (element.querySelector('.mc-hp-frame')) return;
+      const core = document.createElement('div');
+      core.className = 'mc-hp-core';
+      const frame = document.createElement('div');
+      frame.className = 'mc-hp-frame';
+      element.append(core, frame);
+    });
   };
   const scheduleMarking = () => {
     if (queued) return;
@@ -71,6 +79,14 @@
   };
   new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
   scheduleMarking();
+  setInterval(() => {
+    document.querySelectorAll("[data-mc='hp-globe']").forEach((element) => {
+      const match = element.textContent.match(/(\d{1,3})\s*%/);
+      if (!match) return;
+      const health = Math.max(0, Math.min(100, Number(match[1])));
+      element.style.setProperty('--mc-hp-empty-height', `${100 - health}%`);
+    });
+  }, 250);
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -291,17 +307,48 @@
       box-shadow: none !important;
     }
     [data-mc='bottom-bg'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
-    /* HP is deliberately split into the native static frame and native live
-       blood layer. The fill is owned by the game, so it always drains with HP. */
+    /* HP globe: two independent transparent graphics — frame and HP core. */
     [data-mc='hp-globe'] {
       background: none !important;
+      position: relative !important;
       filter: drop-shadow(0 0 5px rgba(190, 20, 30, .42)) !important;
       overflow: visible !important;
+      --mc-hp-empty-height: 0%;
     }
-    .mc-hp-frame, .mc-hp-core { display: none !important; visibility: hidden !important; opacity: 0 !important; }
     [data-mc='hp-globe'] .blood-frame,
     [data-mc='hp-globe'] .blood,
-    [data-mc='hp-globe'] .glass { opacity: 1 !important; }
+    [data-mc='hp-globe'] .glass { opacity: 0 !important; }
+    .mc-hp-core {
+      position: absolute;
+      top: 16%;
+      left: 28%;
+      width: 44%;
+      aspect-ratio: 1;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 50%;
+      pointer-events: none;
+      background: url("${hpCore}") center / 100% 100% no-repeat;
+    }
+    .mc-hp-core::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: var(--mc-hp-empty-height);
+      background: linear-gradient(180deg, rgba(4, 2, 3, .98), rgba(28, 4, 7, .92));
+      box-shadow: inset 0 -2px 5px rgba(195, 27, 35, .3);
+      pointer-events: none;
+    }
+    .mc-hp-frame {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: url("${hpFrame}") center / contain no-repeat;
+    }
     [data-mc='hp-globe'] .hpp {
       position: relative !important;
       z-index: 5 !important;
