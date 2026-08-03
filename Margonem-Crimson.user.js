@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.2.0
+// @version      4.0.0
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -14,6 +14,36 @@
 
 (() => {
   'use strict';
+
+  // Margonem does not expose stable IDs for these elements.  Mark the exact
+  // native nodes once they appear, then style the marker rather than broad
+  // selectors such as `.bottom .bg`.
+  const markerMap = [
+    ['.top > .bg', 'top-bg'],
+    ['.top-left', 'top-left'],
+    ['.top-right', 'top-right'],
+    ['.bottom > .bg', 'bottom-bg'],
+    ['.bottom > .bg-additional-widget-left', 'bottom-side'],
+    ['.bottom > .bg-additional-widget-right', 'bottom-side'],
+    ['.hp-indicator-wrapper', 'hp-globe'],
+    ['.right-main-column-wrapper', 'equipment-column'],
+    ['.inventory-grid-bg', 'inventory-bg'],
+    ['.interface-element-item-slot-grid-stretch', 'inventory-grid-frame']
+  ];
+  let queued = false;
+  const markInterface = () => {
+    queued = false;
+    markerMap.forEach(([selector, name]) => {
+      document.querySelectorAll(selector).forEach((element) => { element.dataset.mc = name; });
+    });
+  };
+  const scheduleMarking = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(markInterface);
+  };
+  new MutationObserver(scheduleMarking).observe(document.documentElement, { childList: true, subtree: true });
+  scheduleMarking();
 
   /*
    * Every group below is bound to a known Margonem UI selector from ui-map.json.
@@ -111,7 +141,7 @@
       box-shadow: 0 0 0 1px #230609 inset !important;
     }
     .eq-slot:hover { border-color: #f4505a !important; box-shadow: 0 0 9px rgba(232, 31, 43, .7) !important; }
-    .inventory-grid-bg, .interface-element-item-slot-grid-stretch, .inventory-grid, .inner-grid {
+    [data-mc='inventory-bg'], [data-mc='inventory-grid-frame'], .inventory-grid, .inner-grid {
       background-color: #10090a !important;
       background-image: linear-gradient(135deg, rgba(139, 25, 34, .14) 25%, transparent 25%, transparent 50%, rgba(139, 25, 34, .14) 50%, rgba(139, 25, 34, .14) 75%, transparent 75%) !important;
       background-size: 7px 7px !important;
@@ -149,9 +179,9 @@
       filter: sepia(1) saturate(2.7) hue-rotate(300deg) brightness(.98) contrast(1.2) drop-shadow(0 0 4px #c6232d) !important;
     }
 
-    /* Fixed game frame. Only the native background layers are painted: no height,
-       width or position is changed, so the map and HUD keep their own layout. */
-    .top > .bg {
+    /* Fixed game frame. These are script-owned markers, not broad game selectors.
+       No height, width or position is modified. */
+    [data-mc='top-bg'] {
       background-color: #100708 !important;
       background-image:
         repeating-linear-gradient(0deg, rgba(255, 69, 74, .035) 0 1px, transparent 1px 4px),
@@ -162,46 +192,22 @@
       border-bottom: 1px solid #8a1e28 !important;
       box-shadow: inset 0 -2px 0 #210508, 0 2px 8px rgba(175, 17, 28, .28) !important;
     }
-    .top-left, .top-right {
+    [data-mc='top-left'], [data-mc='top-right'] {
       background: linear-gradient(180deg, rgba(40, 8, 11, .80), rgba(7, 6, 7, .25)) !important;
       border: 1px solid rgba(137, 30, 39, .65) !important;
       border-top: 0 !important;
       box-shadow: 0 4px 10px rgba(0, 0, 0, .55) !important;
     }
 
-    /* Bottom: paint backgrounds only. The battle controller, slots and their size
-       are intentionally left to the game. */
-    .bottom > .bg {
+    /* Bottom: only paint the native centre layer. No pseudo-elements, no added
+       frame and no dimensions — this removes the oversized lower decoration. */
+    [data-mc='bottom-bg'] {
       background: repeating-linear-gradient(0deg, rgba(255, 69, 74, .032) 0 1px, transparent 1px 4px),
         linear-gradient(180deg, #080607, #1a0709 55%, #080607) !important;
       border-top: 1px solid #8a1e28 !important;
       box-shadow: inset 0 2px 0 #250609, 0 -2px 8px rgba(175, 17, 28, .26) !important;
     }
-    .bottom > .bg-additional-widget-left, .bottom > .bg-additional-widget-right {
-      background: linear-gradient(180deg, rgba(22, 7, 9, .92), rgba(6, 5, 6, .86)) !important;
-      border-top: 1px solid #6e1b25 !important;
-    }
-
-    /* The native HP globe stays functional; this only adds the red-metal rim and
-       two small ornamental claws behind it. */
-    .hp-indicator-wrapper {
-      filter: drop-shadow(0 0 7px rgba(197, 21, 31, .58)) !important;
-    }
-    .hp-indicator-wrapper::before, .hp-indicator-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 46%;
-      width: 23px;
-      height: 28px;
-      border: 2px solid #9e2630;
-      border-top-color: #ee5960;
-      border-bottom: 0;
-      opacity: .9;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .hp-indicator-wrapper::before { right: 87%; transform: rotate(-29deg) skewY(-18deg); border-radius: 90% 0 0 0; }
-    .hp-indicator-wrapper::after { left: 87%; transform: rotate(29deg) skewY(18deg); border-radius: 0 90% 0 0; }
-    .hp-indicator .blood-frame { filter: sepia(.35) saturate(1.55) hue-rotate(327deg) contrast(1.12) !important; }
+    [data-mc='bottom-side'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+    [data-mc='hp-globe'] { filter: drop-shadow(0 0 5px rgba(197, 21, 31, .35)) !important; }
   `);
 })();
