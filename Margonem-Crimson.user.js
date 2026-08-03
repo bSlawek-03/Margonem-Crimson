@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      5.4.0
+// @version      5.4.1
 // @description  Modularny czarno-czerwony motyw interfejsu Margonem.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -306,7 +306,7 @@
 
     /* Bottom: only paint the native centre layer. No pseudo-elements, no added
        frame and no dimensions — this removes the oversized lower decoration. */
-    [data-mc='bottom-bg'] {
+    .bottom {
       background-color: #0a0708 !important;
       background-image: url("${crimsonBottom}") !important;
       background-repeat: no-repeat !important;
@@ -315,6 +315,7 @@
       border: 0 !important;
       box-shadow: none !important;
     }
+    [data-mc='bottom-bg'] { background: transparent !important; border: 0 !important; box-shadow: none !important; }
     [data-mc='hp-globe'] {
       background: none !important;
       filter: drop-shadow(0 0 6px rgba(197, 21, 31, .52)) !important;
