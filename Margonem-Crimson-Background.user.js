@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson — Tło
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.4.0
+// @version      1.5.0
 // @description  Czarne tło Crimson z arcydemonem po prawej stronie.
 // @author       Sławek
 // @match        https://*.margonem.pl/*
@@ -38,7 +38,11 @@
     }
 
     #revo-background {
-      background: transparent !important;
+      background-color: #030102 !important;
+      background-image: url("${background}") !important;
+      background-position: 80px center !important;
+      background-size: 100vw 100vh !important;
+      background-repeat: no-repeat !important;
     }
 
     #centerbox {
@@ -46,4 +50,19 @@
       z-index: 10 !important;
     }
   `);
+
+  // Margonem may recreate its black background after the script is loaded.
+  // Reapply the wallpaper directly to that layer for every resolution.
+  const paintGameBackground = () => {
+    const gameBackground = document.getElementById('revo-background');
+    if (!gameBackground) return;
+
+    gameBackground.style.setProperty('background-color', '#030102', 'important');
+    gameBackground.style.setProperty('background-image', `url("${background}")`, 'important');
+    gameBackground.style.setProperty('background-position', '80px center', 'important');
+    gameBackground.style.setProperty('background-size', '100vw 100vh', 'important');
+    gameBackground.style.setProperty('background-repeat', 'no-repeat', 'important');
+  };
+
+  [0, 200, 800, 2000, 5000].forEach((delay) => setTimeout(paintGameBackground, delay));
 })();
