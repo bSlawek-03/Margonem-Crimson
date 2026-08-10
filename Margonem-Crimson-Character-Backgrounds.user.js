@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      4.0.0
+// @version      4.1.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -143,7 +143,8 @@
       const opener = backgroundMenu.querySelector('.bck.button');
       if (opener) opener.click();
 
-      const option = backgroundMenu.querySelector(`.dropdown-menu .menu-option[value="${wantedValue}"]`);
+      const option = Array.from(document.querySelectorAll('.scroll-wrapper.menu-wrapper .bck-wrapper .option'))
+        .find((item) => item.getAttribute('value') === wantedValue && visible(item));
       if (option) {
         option.click();
         return true;
@@ -285,21 +286,21 @@
 
     watchGameBackground();
 
-    // The Margonem addon stores one global Tło value. Apply the assigned RAW
-    // image to the game background layer after the addon writes its value.
-    if (entry.url && applyRawBackground(entry.url)) {
-      fitGameBackground();
-      lastAppliedSlot = entry.slot;
-      lastCharacter = key;
-      setPanelStatus(`Aktywne tło postaci: ${characters.find((item) => item.key === key)?.label || key}`);
-      return;
-    }
-
     if (readSelectedSlot() === entry.slot) {
       clearRawBackground();
       fitGameBackground();
       lastAppliedSlot = entry.slot;
       lastCharacter = key;
+      return;
+    }
+
+    // Prefer the real Margonem background option. The RAW image is only a
+    // fallback when the requested custom slot has not been created there.
+    if (entry.url && applyRawBackground(entry.url)) {
+      fitGameBackground();
+      lastAppliedSlot = entry.slot;
+      lastCharacter = key;
+      setPanelStatus(`Aktywne tło postaci: ${characters.find((item) => item.key === key)?.label || key}`);
       return;
     }
 
