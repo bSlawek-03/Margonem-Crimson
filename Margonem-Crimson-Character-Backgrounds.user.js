@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.4.0
+// @version      4.0.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -197,6 +197,8 @@
   };
 
   let rawStyleSnapshot = null;
+  let observedBackground = null;
+  let backgroundObserver = null;
 
   const applyRawBackground = (url) => {
     const gameBackground = document.getElementById('revo-background');
@@ -209,12 +211,30 @@
       }
     }
 
+    const currentImage = gameBackground.style.getPropertyValue('background-image');
+    if (gameBackground.dataset.mcrimsonRawUrl === url && currentImage.includes(url)) return true;
+
     gameBackground.dataset.mcrimsonRaw = '1';
+    gameBackground.dataset.mcrimsonRawUrl = url;
     gameBackground.style.setProperty('background-image', `url("${url.replace(/"/g, '%22')}")`, 'important');
     gameBackground.style.setProperty('background-position', 'center right', 'important');
     gameBackground.style.setProperty('background-size', 'contain', 'important');
     gameBackground.style.setProperty('background-repeat', 'no-repeat', 'important');
     return true;
+  };
+
+  const watchGameBackground = () => {
+    const gameBackground = document.getElementById('revo-background');
+    if (!gameBackground || gameBackground === observedBackground) return;
+
+    backgroundObserver?.disconnect();
+    observedBackground = gameBackground;
+    backgroundObserver = new MutationObserver(() => {
+      const key = getCharacterName();
+      const url = key ? config[key]?.url : '';
+      if (url) applyRawBackground(url);
+    });
+    backgroundObserver.observe(gameBackground, { attributes: true, attributeFilter: ['style', 'class'] });
   };
 
   const clearRawBackground = () => {
@@ -262,6 +282,18 @@
     const now = Date.now();
     if (now - lastAttempt < 500 && key === lastCharacter) return;
     lastAttempt = now;
+
+    watchGameBackground();
+
+    // The Margonem addon stores one global Tło value. Apply the assigned RAW
+    // image to the game background layer after the addon writes its value.
+    if (entry.url && applyRawBackground(entry.url)) {
+      fitGameBackground();
+      lastAppliedSlot = entry.slot;
+      lastCharacter = key;
+      setPanelStatus(`Aktywne tło postaci: ${characters.find((item) => item.key === key)?.label || key}`);
+      return;
+    }
 
     if (readSelectedSlot() === entry.slot) {
       clearRawBackground();
@@ -373,7 +405,7 @@
       <h3>Tła przypisane do postaci</h3>
       <label>Postać</label>
       <select data-mc-character></select>
-      <label>Slot dodatku Margonem</label>
+      <label>Slot referencyjny dodatku Margonem</label>
       <select data-mc-slot>${Array.from({length: 6}, (_, index) => `<option value="${index + 1}">Własne ${index + 1}</option>`).join('')}</select>
       <label>RAW obrazu (opcjonalnie)</label>
       <input data-mc-url type="url" placeholder="https://raw.githubusercontent.com/...png">
@@ -381,7 +413,7 @@
       <button data-mc-test>Testuj teraz</button>
       <div class="mc-status" data-mc-status></div>
       <div class="mc-list" data-mc-list></div>
-      <div class="mc-help">Jeśli slot Własne N istnieje w dodatku Margonem, zostanie wybrany. RAW jest używany tylko wtedy, gdy tego slotu jeszcze nie ma.</div>
+      <div class="mc-help">Dodatek Margonem ma jedno globalne pole Tło. Ten panel przypisuje RAW niezależnie do każdej postaci i ponawia ustawienie po każdym nadpisaniu.</div>
     `;
     document.body.appendChild(panel);
 
@@ -419,6 +451,7 @@
   };
 
   const tick = () => {
+    watchGameBackground();
     const key = getCharacterName();
     if (!key) return;
     const wantedSlot = config[key]?.slot || 0;
