@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tla postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.0.1
+// @version      1.0.2
 // @description  Automatycznie zmienia tlo po nicku aktualnej postaci.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -15,7 +15,6 @@
 // @resource     lowczyni https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-lowcz-driady-background.png?v=1
 // @resource     teza https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-tezcatlipoca-background.png?v=1
 // @resource     tanrtoth https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-ice-king-background.png?v=1
-// @resource     domyslne https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/cherry-blossom-background.png?v=1
 // @updateURL    https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson-Character-Backgrounds.user.js
 // @downloadURL  https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/Margonem-Crimson-Character-Backgrounds.user.js
 // ==/UserScript==
@@ -29,8 +28,7 @@
     zoons: GM_getResourceURL('zoons'),
     lowczyni: GM_getResourceURL('lowczyni'),
     teza: GM_getResourceURL('teza'),
-    tanrtoth: GM_getResourceURL('tanrtoth'),
-    domyslne: GM_getResourceURL('domyslne')
+    tanrtoth: GM_getResourceURL('tanrtoth')
   };
 
   const characterBackgrounds = {
@@ -106,10 +104,9 @@
   let lastPaint = 0;
 
   const applyBackground = (key) => {
-    const image = backgrounds[key] || backgrounds.domyslne;
-    if (!image) return;
+    const image = key ? backgrounds[key] : '';
 
-    const cssImage = `url("${image}")`;
+    const cssImage = image ? `url("${image}")` : 'none';
     document.documentElement.style.setProperty('--crimson-character-background', cssImage);
 
     for (const element of [document.documentElement, document.body, document.getElementById('revo-background')]) {
@@ -126,7 +123,7 @@
 
   const tick = () => {
     const name = getCharacterName();
-    const key = characterBackgrounds[normalize(name)] || 'domyslne';
+    const key = characterBackgrounds[normalize(name)] || '';
 
     if (key !== lastKey || Date.now() - lastPaint > 2500) {
       applyBackground(key);
@@ -134,7 +131,7 @@
     }
   };
 
-  applyBackground('domyslne');
+  applyBackground('');
   setInterval(tick, 700);
   tick();
 })();
