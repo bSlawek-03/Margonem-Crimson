@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.0.0
+// @version      3.1.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
