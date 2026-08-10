@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.1.0
+// @version      3.3.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -15,7 +15,7 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'margonem-crimson-character-backgrounds-v3';
+  const STORAGE_KEY = 'margonem-crimson-character-backgrounds-v4';
 
   const characters = [
     { key: 'fourhead', label: 'Fourhead', level: '114', slot: 1 },
@@ -153,7 +153,7 @@
     for (const element of elements) {
       if (!visible(element)) continue;
       const text = cleanText(element.textContent || element.value);
-      if (!labels.includes(text)) continue;
+      if (!labels.includes(text) && !/^wlasne \d+$/.test(text)) continue;
       element.click();
       return true;
     }
