@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      4.1.0
+// @version      4.2.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -140,14 +140,19 @@
       const current = backgroundMenu.querySelector('.bck .menu-option');
       if (current?.getAttribute('value') === wantedValue) return true;
 
-      const opener = backgroundMenu.querySelector('.bck.button');
-      if (opener) opener.click();
-
       const option = Array.from(document.querySelectorAll('.scroll-wrapper.menu-wrapper .bck-wrapper .option'))
         .find((item) => item.getAttribute('value') === wantedValue && visible(item));
       if (option) {
         option.click();
         return true;
+      }
+
+      // Open the list only when it is not already open. The next tick will
+      // click the option after Margonem has rendered the menu.
+      const opener = backgroundMenu.querySelector('.bck.button');
+      if (opener) {
+        opener.click();
+        lastMenuOpen = Date.now();
       }
     }
 
@@ -169,6 +174,11 @@
 
   const openBackgroundPicker = () => {
     const backgroundMenu = addonRoot()?.querySelector('.background-menu-wrapper');
+    if (Date.now() - lastMenuOpen < 250) return true;
+    const visibleOption = Array.from(document.querySelectorAll('.scroll-wrapper.menu-wrapper .bck-wrapper .option'))
+      .some((item) => visible(item));
+    if (visibleOption) return true;
+
     const addonOpener = backgroundMenu?.querySelector('.bck.button');
     if (addonOpener) {
       addonOpener.click();
@@ -253,6 +263,7 @@
   let lastCharacter = '';
   let lastAppliedSlot = 0;
   let lastAttempt = 0;
+  let lastMenuOpen = 0;
 
   const readSelectedSlot = () => {
     const current = addonRoot()?.querySelector('.background-menu-wrapper .bck .menu-option');
