@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      3.3.0
+// @version      3.4.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -50,6 +50,8 @@
     .trim();
 
   const cleanText = (value) => normalize(value).replace(/[·•:]/g, '').trim();
+  const addonRoot = () => document.querySelector('#addon_29');
+  const slotValue = (slot) => String(99 + Number(slot));
 
   const loadConfig = () => {
     try {
@@ -131,6 +133,23 @@
   };
 
   const chooseSlot = (slot) => {
+    const root = addonRoot();
+    const backgroundMenu = root?.querySelector('.background-menu-wrapper');
+    if (backgroundMenu) {
+      const wantedValue = slotValue(slot);
+      const current = backgroundMenu.querySelector('.bck .menu-option');
+      if (current?.getAttribute('value') === wantedValue) return true;
+
+      const opener = backgroundMenu.querySelector('.bck.button');
+      if (opener) opener.click();
+
+      const option = backgroundMenu.querySelector(`.dropdown-menu .menu-option[value="${wantedValue}"]`);
+      if (option) {
+        option.click();
+        return true;
+      }
+    }
+
     const found = findSlot(slot);
     if (!found) return false;
 
@@ -148,6 +167,13 @@
   };
 
   const openBackgroundPicker = () => {
+    const backgroundMenu = addonRoot()?.querySelector('.background-menu-wrapper');
+    const addonOpener = backgroundMenu?.querySelector('.bck.button');
+    if (addonOpener) {
+      addonOpener.click();
+      return true;
+    }
+
     const labels = ['brak tła', 'tło'];
     const elements = document.querySelectorAll('button, input, [role="combobox"], [role="button"], div, span');
     for (const element of elements) {
@@ -208,6 +234,10 @@
   let lastAttempt = 0;
 
   const readSelectedSlot = () => {
+    const current = addonRoot()?.querySelector('.background-menu-wrapper .bck .menu-option');
+    const addonValue = Number(current?.getAttribute('value'));
+    if (addonValue >= 100 && addonValue <= 105) return addonValue - 99;
+
     for (const select of document.querySelectorAll('select')) {
       if (!visible(select) || select.closest('#mc-character-panel')) continue;
       const text = cleanText(select.options[select.selectedIndex]?.textContent);
