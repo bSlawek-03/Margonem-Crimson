@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tla postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.0.0
+// @version      1.0.1
 // @description  Automatycznie zmienia tlo po nicku aktualnej postaci.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -56,7 +56,7 @@
 
     for (const element of candidates) {
       const text = element.textContent.replace(/\s+/g, ' ').trim();
-      const match = text.match(/^(.+?)\s*\(\s*\d+\s*w\s*\)/i);
+      const match = text.match(/^(.+?)\s*\(\s*\d+\s*[a-z]?\s*\)/i);
       if (!match || match[1].length > 40) continue;
 
       const rect = element.getBoundingClientRect();
