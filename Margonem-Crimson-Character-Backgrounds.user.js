@@ -207,6 +207,24 @@
   let lastAppliedSlot = 0;
   let lastAttempt = 0;
 
+  const readSelectedSlot = () => {
+    for (const select of document.querySelectorAll('select')) {
+      if (!visible(select) || select.closest('#mc-character-panel')) continue;
+      const text = cleanText(select.options[select.selectedIndex]?.textContent);
+      const match = text.match(/^wlasne (\d+)$/);
+      if (match) return Number(match[1]);
+    }
+
+    const elements = document.querySelectorAll('input, button, [role="combobox"], [role="button"], div, span');
+    for (const element of elements) {
+      if (!visible(element) || element.closest('#mc-character-panel, #mc-character-toggle')) continue;
+      const text = cleanText(element.textContent || element.value);
+      const match = text.match(/^wlasne (\d+)$/);
+      if (match) return Number(match[1]);
+    }
+    return 0;
+  };
+
   const applyForCharacter = (key) => {
     const entry = config[key];
     if (!entry) return;
@@ -214,6 +232,14 @@
     const now = Date.now();
     if (now - lastAttempt < 500 && key === lastCharacter) return;
     lastAttempt = now;
+
+    if (readSelectedSlot() === entry.slot) {
+      clearRawBackground();
+      fitGameBackground();
+      lastAppliedSlot = entry.slot;
+      lastCharacter = key;
+      return;
+    }
 
     if (chooseSlot(entry.slot)) {
       clearRawBackground();
@@ -364,7 +390,14 @@
 
   const tick = () => {
     const key = getCharacterName();
-    if (key && (key !== lastCharacter || config[key]?.slot !== lastAppliedSlot)) applyForCharacter(key);
+    if (!key) return;
+    const wantedSlot = config[key]?.slot || 0;
+    const selectedSlot = readSelectedSlot();
+    // Margonem can restore its own value after a character/map refresh.
+    // Keep enforcing the character assignment when that happens.
+    if (key !== lastCharacter || wantedSlot !== lastAppliedSlot || selectedSlot !== wantedSlot) {
+      applyForCharacter(key);
+    }
   };
 
   const start = () => {
