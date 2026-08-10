@@ -160,6 +160,16 @@
     return false;
   };
 
+  const fitGameBackground = () => {
+    const gameBackground = document.getElementById('revo-background');
+    if (!gameBackground) return;
+    // Margonem keeps the selected image; these properties only stop it being
+    // cropped and keep the titan on the right side of the game area.
+    gameBackground.style.setProperty('background-position', 'center right', 'important');
+    gameBackground.style.setProperty('background-size', 'contain', 'important');
+    gameBackground.style.setProperty('background-repeat', 'no-repeat', 'important');
+  };
+
   let rawStyleSnapshot = null;
 
   const applyRawBackground = (url) => {
@@ -207,6 +217,7 @@
 
     if (chooseSlot(entry.slot)) {
       clearRawBackground();
+      fitGameBackground();
       lastAppliedSlot = entry.slot;
       lastCharacter = key;
       setPanelStatus(`Wybrano w Margonem: Własne ${entry.slot}`);
@@ -217,6 +228,7 @@
       window.setTimeout(() => {
         if (chooseSlot(entry.slot)) {
           clearRawBackground();
+          fitGameBackground();
           lastAppliedSlot = entry.slot;
           lastCharacter = key;
           setPanelStatus(`Wybrano w Margonem: Własne ${entry.slot}`);
