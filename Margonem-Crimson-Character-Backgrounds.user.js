@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tła postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      4.7.0
+// @version      4.8.0
 // @description  Panel do przypisywania RAW tła do postaci Margonem.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -15,7 +15,7 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'margonem-crimson-character-backgrounds-v9';
+  const STORAGE_KEY = 'margonem-crimson-character-backgrounds-v10';
 
   const characters = [
     { key: 'fourhead', label: 'Fourhead', level: '114', slot: 1 },
@@ -29,12 +29,12 @@
   const knownCharacters = characters.map((item) => item.key);
 
   const defaultUrls = {
-    fourhead: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-renegat-baulus-background.png?v=7',
-    twohead: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-archdemon-background.png?v=7',
-    onehawk: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-versus-zoons-background.png?v=7',
-    threebane: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-lowcz-driady-background.png?v=7',
-    fivefang: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-tezcatlipoca-background.png?v=7',
-    'po prostu slawek': 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-ice-king-background.png?v=7'
+    fourhead: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-renegat-baulus-background.png?v=8',
+    twohead: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/crimson-archdemon-background.png?v=8',
+    onehawk: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-versus-zoons-background.png?v=8',
+    threebane: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-lowcz-driady-background.png?v=8',
+    fivefang: 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-tezcatlipoca-background.png?v=8',
+    'po prostu slawek': 'https://raw.githubusercontent.com/bSlawek-03/Margonem-Crimson/main/assets/titan-ice-king-background.png?v=8'
   };
 
   const defaults = Object.fromEntries(characters.map((item) => [item.key, {
