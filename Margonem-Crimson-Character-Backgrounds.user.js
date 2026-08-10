@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Margonem Crimson - Tla postaci
 // @namespace    https://github.com/bSlawek-03/Margonem-Crimson
-// @version      1.0.2
+// @version      1.0.3
 // @description  Automatycznie zmienia tlo po nicku aktualnej postaci.
 // @author       Slawek
 // @match        https://*.margonem.pl/*
@@ -39,6 +39,7 @@
     fivefang: 'teza',
     'po prostu slawek': 'tanrtoth'
   };
+  const knownCharacters = Object.keys(characterBackgrounds);
 
   const normalize = (value) => String(value || '')
     .normalize('NFD')
@@ -53,9 +54,13 @@
     let best = null;
 
     for (const element of candidates) {
-      const text = element.textContent.replace(/\s+/g, ' ').trim();
-      const match = text.match(/^(.+?)\s*\(\s*\d+\s*[a-z]?\s*\)/i);
-      if (!match || match[1].length > 40) continue;
+      const text = normalize(element.textContent);
+      if (text.length > 80) continue;
+
+      const characterKey = knownCharacters.find((name) =>
+        text === name || text.startsWith(`${name} `)
+      );
+      if (!characterKey) continue;
 
       const rect = element.getBoundingClientRect();
       if (!rect.width || !rect.height || rect.top < -10 || rect.top > window.innerHeight * 0.25) continue;
@@ -64,10 +69,10 @@
       if (distance > window.innerWidth * 0.35) continue;
 
       const score = distance + rect.top * 2 + text.length;
-      if (!best || score < best.score) best = { name: match[1].trim(), score };
+      if (!best || score < best.score) best = { key: characterKey, score };
     }
 
-    return best ? best.name : '';
+    return best ? best.key : '';
   };
 
   GM_addStyle(`
@@ -122,8 +127,7 @@
   };
 
   const tick = () => {
-    const name = getCharacterName();
-    const key = characterBackgrounds[normalize(name)] || '';
+    const key = getCharacterName();
 
     if (key !== lastKey || Date.now() - lastPaint > 2500) {
       applyBackground(key);
